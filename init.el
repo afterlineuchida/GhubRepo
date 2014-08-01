@@ -359,6 +359,7 @@
 
 ;;magit.el
 (require 'magit)
+(define-key global-map (kbd "C-x g")	'magit-status)
 
 ;;git-gutter+
 (require 'git-gutter+)
