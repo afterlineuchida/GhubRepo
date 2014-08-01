@@ -36,6 +36,10 @@
 ;;        '((".*Hiragino_Mincho_pro.*" . 1.2)))
       '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.1)));; Mac用フォント設定
 
+;;yalinum
+(toggle-scroll-bar nil) ;スクロール非表示
+(global-yalinum-mode t)
+(set-face-background 'yalinum-bar-face "DarkOliveGreen")
 
 ;; 基本キーバインド
 (define-key global-map (kbd "C-h") 'delete-backward-char)	; 削除
@@ -44,7 +48,7 @@
 (define-key global-map (kbd "C-c i") 'indent-region)		; インデント
 (define-key global-map (kbd "C-c M-a") 'align-regexp)		;対象文字でインデント
 (define-key global-map (kbd "C-c C-i") 'hippie-expand)		; 補完
-(define-key global-map (kbd "C-c g") 'moccur)				;grep
+;(define-key global-map (kbd "C-c g") 'moccur)				;grep
 (define-key global-map (kbd "C-c ;") 'comment-dwim)		; コメントアウト
 (define-key global-map (kbd "\C-m") 'newline-and-indent)	; インデント(改行)
 
@@ -53,11 +57,6 @@
 (global-set-key "\C-i" '(lambda ()
   (interactive)
   (insert "\t")))
-
-;;yalinum
-(toggle-scroll-bar nil)
-(global-yalinum-mode t)
-(set-face-background 'yalinum-bar-face "DarkOliveGreen")
 
 ;; ウィンドウサイズの位置、サイズ
 ;;(set-frame-parameter nil 'fullscreen 'maximized) ;;最大化
@@ -365,6 +364,8 @@
 (require 'git-gutter+)
 (global-git-gutter+-mode t)
 
+;;migemo
+(require 'migemo)
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
