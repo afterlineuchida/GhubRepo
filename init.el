@@ -274,6 +274,7 @@
 ;;helm
 (require 'helm)
 (require 'helm-config)
+(require 'helm-descbinds)
 (helm-mode 1)
 
 (define-key global-map (kbd "M-x")    	'helm-M-x)
