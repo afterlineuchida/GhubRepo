@@ -370,6 +370,10 @@
 ;;migemo
 (require 'migemo)
 
+;;vagrant-tramp
+(eval-after-load 'tramp
+  '(vagrant-tramp-enable))
+
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
 
