@@ -42,15 +42,68 @@
 (set-face-background 'yalinum-bar-face "DarkOliveGreen")
 
 ;; 基本キーバインド
-(define-key global-map (kbd "C-h") 'delete-backward-char)	; 削除
-(define-key global-map (kbd "M-?") 'help-for-help)			; ヘルプ
-(define-key global-map (kbd "C-z") 'undo)					; undo
-(define-key global-map (kbd "C-c i") 'indent-region)		; インデント
-(define-key global-map (kbd "C-c M-a") 'align-regexp)		;対象文字でインデント
-(define-key global-map (kbd "C-c C-i") 'hippie-expand)		; 補完
-;(define-key global-map (kbd "C-c g") 'moccur)				;grep
-(define-key global-map (kbd "C-c ;") 'comment-dwim)		; コメントアウト
-(define-key global-map (kbd "\C-m") 'newline-and-indent)	; インデント(改行)
+(define-key global-map (kbd "C-h") 'delete-backward-char)				;削除
+(define-key global-map (kbd "M-?") 'help-for-help)						;ヘルプ
+(define-key global-map (kbd "C-z") 'undo)								;undo
+(define-key global-map (kbd "C-c i") 'indent-region)					;インデント
+(define-key global-map (kbd "C-c M-a") 'align-regexp)					;対象文字でインデント
+(define-key global-map (kbd "C-c C-i") 'hippie-expand)					;補完
+;(define-key global-map (kbd "C-c g") 'moccur)							;grep
+(define-key global-map (kbd "C-c ;") 'comment-dwim)					;コメントアウト
+(define-key global-map (kbd "C-m") 'newline-and-indent)				;インデント(改行)
+(define-key global-map (kbd "C-a") 'beginning-of-visual-indented-line)	;行頭へ
+(define-key global-map (kbd "C-e") 'end-of-visual-line)				;行末へ
+(define-key global-map (kbd "C-c e") 'eshell)							;eshell
+
+;; （＝揃えはよく使うのでワンストロークで）
+(global-set-key (kbd "C-]")
+				'(lambda () (interactive)
+				   (setq current-indent-tabs-mode indent-tabs-mode)
+				   (setq indent-tabs-mode t)
+				   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)=" 1 1 nil)
+				   (setq indent-tabs-mode current-indent-tabs-mode)
+				   ))
+
+;; タブインデントの時は改行連打でタブだけの行を残す（これは個人的な好み）
+;; スペースインデントの時はスペースだけの行は残さない（一般的）
+;(global-set-key (kbd "RET") '(lambda () (interactive)
+;							   (if (equal indent-tabs-mode t)
+;								   (progn (newline) (indent-for-tab-command))
+;								 (newline-and-indent)
+;								 )))
+
+;; C-aの行頭移動を空白文字とそれ以外とのトグルに。
+(defun beginning-of-indented-line (current-point)
+  "インデント文字を飛ばした行頭に戻る。ただし、ポイントから行頭までの間にインデント文字しかない場合は、行頭に戻る。"
+  (interactive "d")
+  (if (string-match
+       "^[ \t]+$"
+       (save-excursion
+         (buffer-substring-no-properties
+          (progn (beginning-of-line) (point))
+          current-point)))
+      (beginning-of-line)
+    (back-to-indentation)))
+
+(defun beginning-of-visual-indented-line (current-point)
+  "インデント文字を飛ばした行頭に戻る。ただし、ポイントから行頭までの間にインデント文 字しかない場合は、行頭に戻る。"
+  (interactive "d")
+  (let ((vhead-pos (save-excursion (progn (beginning-of-visual-line) (point))))
+        (head-pos (save-excursion (progn (beginning-of-line) (point)))))
+    (cond
+     ;; 物理行の1行目にいる場合
+     ((eq vhead-pos head-pos)
+      (if (string-match
+           "^[ \t]+$"
+           (buffer-substring-no-properties vhead-pos current-point))
+          (beginning-of-visual-line)
+        (back-to-indentation)))
+     ;; 物理行の2行目以降の先頭にいる場合
+     ((eq vhead-pos current-point)
+      (backward-char)
+      (beginning-of-visual-indented-line (point)))
+     ;; 物理行の2行目以降の途中にいる場合
+     (t (beginning-of-visual-line)))))
 
 
 ;; C-i でタブを入力できるように
@@ -144,10 +197,10 @@
 (setq kill-whole-line t)
 
 ;; 最終行に必ず一行挿入する
-(setq require-final-newline t)
+(setq require-final-newline nil)
 
 ;; バッファの最後でnewlineで新規行を追加するのを禁止する
-(setq next-line-add-newlines nil)
+(setq next-line-add-newlines t)
 
 ;; バックアップファイルを作らない
 (setq make-backup-files nil)
@@ -214,6 +267,7 @@
 (setq-default indent-tabs-mode t)
 (setq-default tab-width 4)
 ;;(setq indent-line-function 'indent-relative-maybe)
+(global-set-key [backspace] 'backward-delete-char)
 
 ;;タブ幅の倍数を設定
 (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
@@ -309,6 +363,7 @@
 ;;undo-tree.el
 (require 'undo-tree)
 (global-undo-tree-mode t)
+(global-set-key (kbd "C-M-/") 'undo-tree-redo)
 
 
 ;;multiple-cursors etc
@@ -361,11 +416,16 @@
 
 ;;magit.el
 (require 'magit)
-(define-key global-map (kbd "C-x g")	'magit-status)
+(define-key global-map (kbd "C-c g")	'magit-status)
 
-;;git-gutter+
+;;git-gutter-fringe+.el
 (require 'git-gutter+)
-(global-git-gutter+-mode t)
+(global-git-gutter+-mode +1)
+(require 'git-gutter-fringe+)
+(git-gutter-fr+-minimal)
+(set-face-foreground 'git-gutter-fr+-modified "blue")
+(set-face-foreground 'git-gutter-fr+-added    "yellow")
+(set-face-foreground 'git-gutter-fr+-deleted  "white")
 
 ;;migemo
 (require 'migemo)
@@ -373,6 +433,36 @@
 ;;vagrant-tramp
 (eval-after-load 'tramp
   '(vagrant-tramp-enable))
+
+;;auto-highlight-symbol
+;(require 'auto-highlight-symbol-config)
+
+;;point-undo
+(require 'point-undo)
+(define-key global-map (kbd "C-u") 'point-undo)
+(define-key global-map (kbd "C-M-u") 'point-redo)
+
+;; revert-buffer without asking
+(defun revert-buffer-force()
+  (interactive)
+  (revert-buffer nil t)
+)
+(define-key global-map (kbd "C-c v") 'revert-buffer-force)
+
+;;hightlight-symbol
+(require 'highlight-symbol)
+(setq highlight-symbol-colors '("DarkOrange" "DodgerBlue1" "DeepPink1")) ;; 使いたい色を設定、repeatしてくれる
+
+;; 適宜keybindの設定
+(global-set-key (kbd "<f3>") 'highlight-symbol-at-point)
+(global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
+
+;;eshell setting
+(add-hook 'eshell-mode-hook '(lambda ()
+	(define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
+
+
+
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
