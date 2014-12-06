@@ -6,9 +6,14 @@
 ;;package
 (require 'package);
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
+;; メニューバーを消す
+(menu-bar-mode -1)
+
+;; ツールバーを消す
+(tool-bar-mode -1)
 
 ;; 日本語環境
 (set-locale-environment nil)
@@ -200,7 +205,7 @@
 (setq require-final-newline nil)
 
 ;; バッファの最後でnewlineで新規行を追加するのを禁止する
-(setq next-line-add-newlines t)
+(setq next-line-add-newlines nil)
 
 ;; バックアップファイルを作らない
 (setq make-backup-files nil)
@@ -447,7 +452,7 @@
   (interactive)
   (revert-buffer nil t)
 )
-(define-key global-map (kbd "C-c v") 'revert-buffer-force)
+(define-key global-map (kbd "C-c C-v") 'revert-buffer-force)
 
 ;;hightlight-symbol
 (require 'highlight-symbol)
@@ -489,13 +494,19 @@
 (global-set-key (kbd "C-t") 'rotate-layout)
 (global-set-key (kbd "M-t") 'rotate-window)
 
+;;cake.el
+;(require 'cake)
 
+
+;;cake2.el
+;(require 'cake2)
+;(global-cake2 t)
+;(cake2-set-default-keymap)
+
+;;emacs-nav
+(setq load-path (cons "~/.emacs.d/elpa/emacs-nav-49" load-path))
+(require 'nav)
+(global-set-key (kbd "C-c n") 'nav)
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
-
-;; メニューバーを消す
-(menu-bar-mode -1)
-
-;; ツールバーを消す
-(tool-bar-mode -1)
