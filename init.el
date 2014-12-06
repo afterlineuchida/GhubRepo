@@ -457,10 +457,34 @@
 (global-set-key (kbd "<f3>") 'highlight-symbol-at-point)
 (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
 
-;;eshell setting
+;; Eshell
+;; Emacs 起動時に Eshell を起動
+;(add-hook 'after-init-hook (lambda () (eshell) ))
+;; 補完時に大文字小文字を区別しない
+(setq eshell-cmpl-ignore-case t)
+;; 確認なしでヒストリ保存
+(setq eshell-ask-to-save-history (quote always))
+;; 補完時にサイクルする
+;(setq eshell-cmpl-cycle-completions t)
+(setq eshell-cmpl-cycle-completions nil)
+;;補完候補がこの数値以下だとサイクルせずに候補表示
+;(setq eshell-cmpl-cycle-cutoff-length 5)
+;; 履歴で重複を無視する
+(setq eshell-hist-ignoredups t)
+;; prompt 文字列の変更
+(setq eshell-prompt-function
+      (lambda ()
+        (concat "AK-MBP: "
+                (replace-regexp-in-string "^/.*/" "" (eshell/pwd))
+				"$ "
+                )))
+;; 変更した prompt 文字列に合う形で prompt の初まりを指定 (C-a で"$ "の次にカーソルがくるようにする)
+;; これの設定を上手くしとかないとタブ補完も効かなくなるっぽい
+(setq eshell-prompt-regexp "^[^#$]*[$#] ")
 (add-hook 'eshell-mode-hook '(lambda ()
 	(define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
 
+;;rotate.el
 (require 'rotate)
 (global-set-key (kbd "C-t") 'rotate-layout)
 (global-set-key (kbd "M-t") 'rotate-window)
