@@ -461,6 +461,9 @@
 (add-hook 'eshell-mode-hook '(lambda ()
 	(define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
 
+(require 'rotate)
+(global-set-key (kbd "C-t") 'rotate-layout)
+(global-set-key (kbd "M-t") 'rotate-window)
 
 
 
