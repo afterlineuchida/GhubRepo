@@ -508,5 +508,26 @@
 (require 'nav)
 (global-set-key (kbd "C-c n") 'nav)
 
+;; Diced で新しいバッファをつくらない
+(defvar my-dired-before-buffer nil)
+(defadvice dired-advertised-find-file
+(before kill-dired-buffer activate)
+(setq my-dired-before-buffer (current-buffer)))
+
+(defadvice dired-advertised-find-file
+(after kill-dired-buffer-after activate)
+(if (eq major-mode 'dired-mode)
+(kill-buffer my-dired-before-buffer)))
+
+(defadvice dired-up-directory
+(before kill-up-dired-buffer activate)
+(setq my-dired-before-buffer (current-buffer)))
+
+(defadvice dired-up-directory
+(after kill-up-dired-buffer-after activate)
+(if (eq major-mode 'dired-mode)
+(kill-buffer my-dired-before-buffer)))
+
+
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
