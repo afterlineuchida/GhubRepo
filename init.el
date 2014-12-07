@@ -59,6 +59,7 @@
 (define-key global-map (kbd "C-a") 'beginning-of-visual-indented-line)	;行頭へ
 (define-key global-map (kbd "C-e") 'end-of-visual-line)				;行末へ
 (define-key global-map (kbd "C-c e") 'eshell)							;eshell
+(define-key global-map (kbd "C-c l") 'load-file)						;load-file
 
 ;; （＝揃えはよく使うのでワンストロークで）
 (global-set-key (kbd "C-]")
@@ -532,8 +533,11 @@
 (when (require 'popwin)
   (setq helm-samewindow nil)
   (setq display-buffer-function 'popwin:display-buffer)
+  (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
                                         ("helm" :regexp t :height 0.4)
+										;("magit" :regexp t :height 0.5)
+										("COMMIT_EDITMSG" :height 0.3)
                                         )))
 
 ;; スタートアップ非表示
