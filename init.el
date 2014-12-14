@@ -295,6 +295,25 @@
 (add-to-list 'auto-mode-alist '("\\.php$'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.ctp$'" . php-mode))
 (setq php-mode-force-pear t)
+(add-hook 'php-mode-hook
+          (lambda ()
+            (defun ywb-php-lineup-arglist-intro (langelem)
+              (save-excursion
+                (goto-char (cdr langelem))
+                (vector (+ (current-column) c-basic-offset))))
+            (defun ywb-php-lineup-arglist-close (langelem)
+              (save-excursion
+                (goto-char (cdr langelem))
+                (vector (current-column))))
+            (c-set-style "stroustrup")    ; インデントは4文字分基本スタイル
+            (c-set-offset 'arglist-intro 'ywb-php-lineup-arglist-intro) ; 配列のインデント関係
+            (c-set-offset 'arglist-close 'ywb-php-lineup-arglist-close) ; 配列のインデント関係
+            (c-set-offset 'arglist-cont-nonempty' 4) ; 配列のインデント関係
+            (c-set-offset 'case-label' 4) ; case はインデントする
+            (make-local-variable 'tab-width)
+            (make-local-variable 'indent-tabs-mode)
+            (setq tab-width 4)
+            (setq indent-tabs-mode t)))   ; インデントにタブを使う
 
 ;; auto-install
 (require 'auto-install)
@@ -336,6 +355,7 @@
 (require 'helm-config)
 (require 'helm-ag)
 (require 'helm-descbinds)
+(require 'helm-ls-git)
 (helm-mode 1)
 
 (define-key global-map (kbd "M-x")    	'helm-M-x)
@@ -353,6 +373,14 @@
 (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
 (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
 
+(custom-set-variables
+   '(helm-truncate-lines t)
+   '(helm-delete-minibuffer-contents-from-point t)
+   '(helm-mini-default-sources '(helm-source-buffers-list
+                                 helm-source-ls-git
+                                 helm-source-files-in-current-dir
+                                 helm-source-recentf
+                                 )))
 
 ;;flycheck
 (require 'flycheck)
