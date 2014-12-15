@@ -517,6 +517,30 @@
 (setq eshell-prompt-regexp "^[^#$]*[$#] ")
 (add-hook 'eshell-mode-hook '(lambda ()
 	(define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
+;; 前のコマンドの履歴取得
+(defun eshell-cmdline "M-p"
+  (let ((last-command 'eshell-previous-matching-input-from-input))
+    (eshell-history-and-bol 'eshell-previous-matching-input-from-input)))
+;; 次のコマンドの履歴取得
+(defun eshell-cmdline "M-n"
+  (let ((last-command 'eshell-previous-matching-input-from-input))
+    (eshell-history-and-bol 'eshell-next-input)))
+;; 直前の履歴を取得
+(defadvice eshell-send-input (after history-position activate)
+  (setq-default eshell-history-index -1))
+;;; helm で履歴から入力
+;(add-hook 'eshell-mode-hook
+;          #'(lambda ()
+;              (define-key eshell-mode-map
+;                (kbd "C-P")
+;                'helm-eshell-history)))
+;;; helm で補完
+;(add-hook 'eshell-mode-hook
+;          #'(lambda ()
+;              (define-key eshell-mode-map
+;                (kbd "C-N")
+;                'helm-esh-pcomplete)))
+
 
 ;;rotate.el
 (require 'rotate)
@@ -537,7 +561,7 @@
 (require 'nav)
 (global-set-key (kbd "C-c n") 'nav)
 
-;; Diced で新しいバッファをつくらない
+;; Dired で新しいバッファをつくらない
 (defvar my-dired-before-buffer nil)
 (defadvice dired-advertised-find-file
   (before kill-dired-buffer activate)
