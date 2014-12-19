@@ -362,7 +362,7 @@
 (define-key global-map (kbd "C-x C-f")	'helm-find-files)
 (define-key global-map (kbd "C-x C-r")	'helm-recentf)
 (define-key global-map (kbd "C-c o")	'helm-occur)
-(define-key global-map (kbd "C-c g")	'helm-ag)
+(define-key global-map (kbd "C-c a")	'helm-ag)
 (define-key global-map (kbd "M-y")    	'helm-show-kill-ring)
 ;(define-key global-map (kbd "C-x b")  	'helm-buffers-list)
 (define-key global-map (kbd "C-x b")  	'helm-mini)
@@ -450,7 +450,7 @@
 
 ;;magit.el
 (require 'magit)
-(define-key global-map (kbd "C-c g")	'magit-status)
+(define-key global-map (kbd "C-c m") 'magit-status)
 
 ;;git-gutter-fringe+.el
 (require 'git-gutter+)
@@ -492,6 +492,8 @@
 (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
 
 ;; Eshell
+;;PATHの引き継ぎ
+(exec-path-from-shell-initialize)
 ;; Emacs 起動時に Eshell を起動
 ;(add-hook 'after-init-hook (lambda () (eshell) ))
 ;; 補完時に大文字小文字を区別しない
@@ -561,7 +563,24 @@
 (require 'nav)
 (global-set-key (kbd "C-c n") 'nav)
 
-;; Dired で新しいバッファをつくらない
+;;; ファイルなら別バッファで、ディレクトリなら同じバッファで開く
+;(defun dired-open-in-accordance-with-situation ()
+;  (interactive)
+;  (let ((file (dired-get-filename)))
+;    (if (file-directory-p file)
+;        (dired-find-alternate-file)
+;      (dired-find-file))))
+;
+;;; dired-find-alternate-file の有効化
+;(put 'dired-find-alternate-file 'disabled nil)
+;;; RET 標準の dired-find-file では dired バッファが複数作られるので
+;;; dired-find-alternate-file を代わりに使う
+;(define-key dired-mode-map (kbd "RET") 'dired-open-in-accordance-with-situation)
+;(define-key dired-mode-map (kbd "C-m") 'dired-open-in-accordance-with-situation)
+;(define-key dired-mode-map (kbd "a") 'dired-find-file)
+
+;;; フォルダを開く時, 新しいバッファを作成しない
+;; バッファを作成したい時にはoやC-u ^を利用する
 (defvar my-dired-before-buffer nil)
 (defadvice dired-advertised-find-file
   (before kill-dired-buffer activate)
@@ -570,7 +589,7 @@
 (defadvice dired-advertised-find-file
   (after kill-dired-buffer-after activate)
   (if (eq major-mode 'dired-mode)
-	  (kill-buffer my-dired-before-buffer)))
+      (kill-buffer my-dired-before-buffer)))
 
 (defadvice dired-up-directory
   (before kill-up-dired-buffer activate)
@@ -579,7 +598,7 @@
 (defadvice dired-up-directory
   (after kill-up-dired-buffer-after activate)
   (if (eq major-mode 'dired-mode)
-	  (kill-buffer my-dired-before-buffer)))
+      (kill-buffer my-dired-before-buffer)))
 
 ;;popwin.el
 (when (require 'popwin)
