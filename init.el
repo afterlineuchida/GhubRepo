@@ -319,7 +319,7 @@
 (require 'auto-install)
 (setq auto-install-directory "~/.emacs.d/elpa/")
 (add-to-list 'load-path auto-install-directory)
-(auto-install-update-emacswiki-package-name t)
+;;(auto-install-update-emacswiki-package-name t)
 (auto-install-compatibility-setup)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
@@ -492,8 +492,6 @@
 (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
 
 ;; Eshell
-;;PATHの引き継ぎ
-(exec-path-from-shell-initialize)
 ;; Emacs 起動時に Eshell を起動
 ;(add-hook 'after-init-hook (lambda () (eshell) ))
 ;; 補完時に大文字小文字を区別しない
@@ -542,6 +540,17 @@
 ;              (define-key eshell-mode-map
 ;                (kbd "C-N")
 ;                'helm-esh-pcomplete)))
+;;PATHの引き継ぎ
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match that used by the user's shell.
+
+This is particularly useful under Mac OSX, where GUI apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
 
 
 ;;rotate.el
