@@ -455,6 +455,17 @@
 ;(dolist (path (reverse (split-string (getenv "PATH") ":")))
 ;  (add-to-list 'exec-path path))
 
+;;; 複数行移動
+;; quoted-insertのキーバインドを無効(prefix)化
+(global-unset-key (kbd "C-q"))
+(smartrep-define-key
+    global-map "C-q"
+  '(
+    ("j" . (next-line 4))		;;4行上移動
+    ("k" . (previous-line 4))	;;4行下移動
+    ))
+
+
 ;;magit.el
 (require 'magit)
 (define-key global-map (kbd "C-c m") 'magit-status)
