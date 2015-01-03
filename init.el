@@ -374,11 +374,15 @@
 ;(define-key global-map (kbd "C-x b")  	'helm-buffers-list)
 (define-key global-map (kbd "C-x b")  	'helm-mini)
 (define-key global-map (kbd "C-c b")  	'helm-descbinds)
+(define-key global-map (kbd "M-.")  	'helm-etags-select)
 
 (define-key helm-map (kbd "C-h") 'delete-backward-char)
 (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
 (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
 (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
+
+;; helm-ag
+(setq helm-ag-base-command "ag --nocolor --nogroup")
 
 (custom-set-variables
    '(helm-truncate-lines t)
@@ -396,6 +400,20 @@
 ;(add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
 ;(add-hook 'web-mode-hook 'flycheck-mode)
 ;(add-hook 'js-mode-hook 'flycheck-mode)
+
+;;web-mode
+;; インデント関係
+(defun web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-html-offset   4)
+  (setq web-mode-css-offset    4)
+  (setq web-mode-script-offset 4)
+  (setq web-mode-php-offset    4)
+  (setq web-mode-java-offset   4)
+  (setq web-mode-asp-offset    4)
+  (setq indent-tabs-mode t)
+  (setq tab-width 4))
+(add-hook 'web-mode-hook 'web-mode-hook)
 
 ;; ファイル名が重複していたらディレクトリ名を追加する
 (require 'uniquify)
