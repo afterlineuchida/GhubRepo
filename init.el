@@ -498,6 +498,10 @@
 ;;magit.el
 (require 'magit)
 (define-key global-map (kbd "C-c m") 'magit-status)
+;; 色変更
+(set-face-foreground 'magit-diff-add "#b9ca4a") ; 追加した部分を緑に
+(set-face-foreground 'magit-diff-del "#d54e53")  ; 削除した 部分を赤に
+(set-face-background 'magit-item-highlight "#000000") ; 選択項目ハイライトがうっとうしいので背景色と同化
 
 ;;git-gutter-fringe+.el
 (require 'git-gutter+)
