@@ -426,6 +426,10 @@
   (setq tab-width 4))
 (add-hook 'web-mode-hook 'web-mode-hook)
 
+;;js2-mode
+(autoload 'js2-mode "js2" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
 ;; ファイル名が重複していたらディレクトリ名を追加する
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
@@ -670,6 +674,29 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 										;("magit" :regexp t :height 0.5)
 										("COMMIT_EDITMSG" :height 0.3)
                                         )))
+
+;; emacsでGauche
+(setq process-coding-system-alist
+      (cons '("gosh" utf-8 . utf-8) process-coding-system-alist))
+(setq scheme-program-name "/usr/local/bin/gosh -i")
+
+(autoload 'scheme-mode "cmuscheme" "Major mode for Scheme." t)
+(autoload 'run-scheme "cmuscheme" "Run an inferior Scheme process." t)
+
+(defun scheme-other-window ()
+  "Run Gauche on other window"
+  (interactive)
+  (split-window-horizontally (/ (frame-width) 2))
+  (let ((buf-name (buffer-name (current-buffer))))
+    (scheme-mode)
+    (switch-to-buffer-other-window
+     (get-buffer-create "*scheme*"))
+    (run-scheme scheme-program-name)
+    (switch-to-buffer-other-window
+     (get-buffer-create buf-name))))
+
+(define-key global-map
+  "\C-cG" 'scheme-other-window)
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
