@@ -524,7 +524,7 @@
   '(vagrant-tramp-enable))
 
 ;;auto-highlight-symbol
-(require 'auto-highlight-symbol-config)
+(require 'auto-highlight-symbol)
 (global-auto-highlight-symbol-mode t)
 
 ;;point-undo
