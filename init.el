@@ -423,7 +423,7 @@
 (defun web-mode-hook ()
   "Hooks for Web mode."
   (setq web-mode-html-offset   4)
-  (setq web-mode-css-offset    4)
+  (setq web-mode-css-offset    2)
   (setq web-mode-script-offset 4)
   (setq web-mode-php-offset    4)
   (setq web-mode-java-offset   4)
@@ -716,6 +716,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   "scss-mode-hook"
   (and
    (set (make-local-variable 'css-indent-offset) 2)
+   (setq tab-width 2)
    )
   )
 (add-hook 'scss-mode-hook
