@@ -60,6 +60,12 @@
 (define-key global-map (kbd "C-e") 'end-of-visual-line)				;行末へ
 (define-key global-map (kbd "C-c e") 'eshell)							;eshell
 (define-key global-map (kbd "C-c l") 'load-file)						;load-file
+(define-key global-map (kbd "C-S-k") 'kill-buffer-this)					;kill-buffer
+
+;; 現在のバッファを消す
+(defun  kill-buffer-this (current-buffer)
+  (kill-buffer current-buffer)
+  )
 
 ;; （＝揃えはよく使うのでワンストロークで）
 (global-set-key (kbd "C-]")
@@ -318,7 +324,7 @@
 ;;python-mode
 (add-hook 'python-mode-hook
     '(lambda ()
-        (setq python-indent 4)
+        (setq tab-width 4)
         (setq indent-tabs-mode t)
     ))
 
@@ -425,10 +431,6 @@
   (setq indent-tabs-mode t)
   (setq tab-width 4))
 (add-hook 'web-mode-hook 'web-mode-hook)
-
-;;js2-mode
-(autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 ;; ファイル名が重複していたらディレクトリ名を追加する
 (require 'uniquify)
@@ -698,6 +700,26 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 (define-key global-map
   "\C-cG" 'scheme-other-window)
+
+;; markdown-mode
+(autoload 'markdown-mode "markdown-mode"
+  "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(setq markdown-command "/opt/local/bin/multimarkdown")
+
+;; scss-mode
+(require 'scss-mode)
+(add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
+;; インデント幅を2にする
+(defun scss-custom ()
+  "scss-mode-hook"
+  (and
+   (set (make-local-variable 'css-indent-offset) 2)
+   )
+  )
+(add-hook 'scss-mode-hook
+  '(lambda() (scss-custom)))
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
