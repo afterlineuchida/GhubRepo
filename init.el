@@ -60,7 +60,7 @@
 (define-key global-map (kbd "C-e") 'end-of-visual-line)				;行末へ
 (define-key global-map (kbd "C-c e") 'eshell)							;eshell
 (define-key global-map (kbd "C-c l") 'load-file)						;load-file
-(define-key global-map (kbd "C-S-k") 'kill-buffer-this)					;kill-buffer
+(define-key global-map (kbd "C-S-k") 'kill-buffer-this)				;kill-buffer
 
 ;; 現在のバッファを消す
 (defun  kill-buffer-this (current-buffer)
@@ -378,7 +378,7 @@
 (define-key global-map (kbd "C-c a")	'helm-ag)
 (define-key global-map (kbd "M-y")    	'helm-show-kill-ring)
 ;(define-key global-map (kbd "C-x b")  	'helm-buffers-list)
-(define-key global-map (kbd "C-x b")  	'helm-mini)
+(define-key global-map (kbd "C-;")  	'helm-mini)
 (define-key global-map (kbd "C-c b")  	'helm-descbinds)
 (define-key global-map (kbd "M-.")  	'helm-etags-select)
 
