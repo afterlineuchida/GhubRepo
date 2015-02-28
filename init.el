@@ -1,3 +1,15 @@
+;;PATHの引き継ぎ
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match that used by the user's shell.
+
+This is particularly useful under Mac OSX, where GUI apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
+
 ;; ロードパス
 (setq load-path (append
                  '("~/.emacs.d")
@@ -606,18 +618,6 @@
 ;              (define-key eshell-mode-map
 ;                (kbd "C-N")
 ;                'helm-esh-pcomplete)))
-;;PATHの引き継ぎ
-(defun set-exec-path-from-shell-PATH ()
-  "Set up Emacs' `exec-path' and PATH environment variable to match that used by the user's shell.
-
-This is particularly useful under Mac OSX, where GUI apps are not started from a shell."
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
-(set-exec-path-from-shell-PATH)
-
 
 ;;rotate.el
 (require 'rotate)
@@ -732,7 +732,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;; key-combo.el
 (require 'key-combo)
-(key-combo-mode 1)
+(global-key-combo-mode 1)
 ;;; 各モードに対するキー設定
 (setq key-combo-lisp-mode-hooks
       '(lisp-mode-hook
@@ -806,6 +806,16 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (key-combo-define-hook key-combo-lisp-mode-hooks
                        'key-combo-lisp-load-default
                        key-combo-lisp-default)
+
+(add-hook 'php-mode-hook ;; or any major-mode-hooks
+  (lambda ()
+  (smart-newline-mode t)))
+(add-hook 'js-mode-hook
+  (lambda ()
+  (smart-newline-mode t)))
+(add-hook 'web-mode-hook
+  (lambda ()
+  (smart-newline-mode t)))
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
