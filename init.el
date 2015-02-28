@@ -745,7 +745,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
       '(("."  . " . ")
         (","  . (key-combo-execute-orignal))
         (",@" . " ,@")
-        (";"  . (";;;; " ";"))
+        (";"  . (";" ";; " ";"))
         ("="  . ("= " "eq " "equal "))
         (">=" . ">= ")))
 
@@ -773,8 +773,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
         (">=" . " >= ")
         ("%"  . (" % " " %= " "%"))
         ("%="  . " %= ")
-        ("!" . (" != " " !~ " "!"))
-        ("!="  . " != " )
+        ("!" . ("!" " != " " !~ "))
+        ("!="  . " !== " )
         ("!~" . " !~ ")
         ("~" . (" =~ " "~"))
         ("::" . " :: ")
@@ -793,11 +793,12 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
         ("/" . ("/`!!'/" "// "))
         ("/=" . " /= ")
         ("/*" . "/* `!!' */")
-        ("{" . ("{`!!'}" "{"))
-        ("{|" . "{ |`!!'|  }")
-        ("\"" . ("\"`!!'\"" "\""))
-        ("'" . ("'`!!''" "'"))
-        ("(" . ("(`!!')" "("))))
+;;        ("{" . ("{`!!'}" "{"))
+;;        ("{|" . "{ |`!!'|  }")
+;;        ("\"" . ("\"`!!'\"" "\""))
+;;        ("'" . ("'`!!''" "'"))
+;;        ("(" . ("(`!!')" "("))
+		))
 
 
 (key-combo-define-hook key-combo-common-mode-hooks
@@ -807,6 +808,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
                        'key-combo-lisp-load-default
                        key-combo-lisp-default)
 
+;; smart-newline.el
+(require 'smart-newline)
 (add-hook 'php-mode-hook ;; or any major-mode-hooks
   (lambda ()
   (smart-newline-mode t)))
