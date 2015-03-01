@@ -58,26 +58,27 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (global-yalinum-mode t)
 (set-face-background 'yalinum-bar-face "DarkOliveGreen")
 
-;; 基本キーバインド
-(define-key global-map (kbd "C-h") 'delete-backward-char)				;削除
-(define-key global-map (kbd "M-?") 'help-for-help)						;ヘルプ
-(define-key global-map (kbd "C-z") 'undo)								;undo
-(define-key global-map (kbd "C-c i") 'indent-region)					;インデント
-(define-key global-map (kbd "C-c M-a") 'align-regexp)					;対象文字でインデント
-(define-key global-map (kbd "C-c C-i") 'hippie-expand)					;補完
-;(define-key global-map (kbd "C-c g") 'moccur)							;grep
-(define-key global-map (kbd "C-c ;") 'comment-dwim)					;コメントアウト
-(define-key global-map (kbd "C-m") 'newline-and-indent)				;インデント(改行)
-(define-key global-map (kbd "C-a") 'beginning-of-visual-indented-line)	;行頭へ
-(define-key global-map (kbd "C-e") 'end-of-visual-line)				;行末へ
-(define-key global-map (kbd "C-c e") 'eshell)							;eshell
-(define-key global-map (kbd "C-c l") 'load-file)						;load-file
-(define-key global-map (kbd "C-S-k") 'kill-buffer-this)				;kill-buffer
-
 ;; 現在のバッファを消す
-(defun  kill-buffer-this (current-buffer)
-  (kill-buffer current-buffer)
-  )
+(defun my-kill-current-buffer()
+  "kill-current-buffer"
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+;; 基本キーバインド
+(global-set-key (kbd "C-h") 'delete-backward-char)				;削除
+(global-set-key (kbd "M-?") 'help-for-help)					;ヘルプ
+(global-set-key (kbd "C-z") 'undo)								;undo
+(global-set-key (kbd "C-c i") 'indent-region)					;インデント
+(global-set-key (kbd "C-c M-a") 'align-regexp)					;対象文字でインデント
+(global-set-key (kbd "C-c C-i") 'hippie-expand)				;補完
+;(global-set-key (kbd "C-c g") 'moccur)						;grep
+(global-set-key (kbd "C-c ;") 'comment-dwim)					;コメントアウト
+(global-set-key (kbd "C-m") 'newline-and-indent)				;インデント(改行)
+(global-set-key (kbd "C-a") 'beginning-of-visual-indented-line) ;行頭へ
+(global-set-key (kbd "C-e") 'end-of-visual-line)				;行末へ
+(global-set-key (kbd "C-c e") 'eshell)							;eshell
+(global-set-key (kbd "C-c l") 'load-file)						;load-file
+(global-set-key (kbd "C-M-k") 'my-kill-current-buffer)			;kill-buffer
 
 ;; （＝揃えはよく使うのでワンストロークで）
 (global-set-key (kbd "C-]")
