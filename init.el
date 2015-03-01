@@ -639,42 +639,42 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (require 'nav)
 (global-set-key (kbd "C-c n") 'nav)
 
-;;; ファイルなら別バッファで、ディレクトリなら同じバッファで開く
-;(defun dired-open-in-accordance-with-situation ()
-;  (interactive)
-;  (let ((file (dired-get-filename)))
-;    (if (file-directory-p file)
-;        (dired-find-alternate-file)
-;      (dired-find-file))))
-;
-;;; dired-find-alternate-file の有効化
-;(put 'dired-find-alternate-file 'disabled nil)
-;;; RET 標準の dired-find-file では dired バッファが複数作られるので
-;;; dired-find-alternate-file を代わりに使う
-;(define-key dired-mode-map (kbd "RET") 'dired-open-in-accordance-with-situation)
-;(define-key dired-mode-map (kbd "C-m") 'dired-open-in-accordance-with-situation)
-;(define-key dired-mode-map (kbd "a") 'dired-find-file)
+;; ファイルなら別バッファで、ディレクトリなら同じバッファで開く
+(defun dired-open-in-accordance-with-situation ()
+  (interactive)
+  (let ((file (dired-get-filename)))
+    (if (file-directory-p file)
+        (dired-find-alternate-file)
+      (dired-find-file))))
+
+;; dired-find-alternate-file の有効化
+(put 'dired-find-alternate-file 'disabled nil)
+;; RET 標準の dired-find-file では dired バッファが複数作られるので
+;; dired-find-alternate-file を代わりに使う
+(define-key dired-mode-map (kbd "RET") 'dired-open-in-accordance-with-situation)
+(define-key dired-mode-map (kbd "C-m") 'dired-open-in-accordance-with-situation)
+(define-key dired-mode-map (kbd "a") 'dired-find-file)
 
 ;;; フォルダを開く時, 新しいバッファを作成しない
 ;; バッファを作成したい時にはoやC-u ^を利用する
-(defvar my-dired-before-buffer nil)
-(defadvice dired-advertised-find-file
-  (before kill-dired-buffer activate)
-  (setq my-dired-before-buffer (current-buffer)))
-
-(defadvice dired-advertised-find-file
-  (after kill-dired-buffer-after activate)
-  (if (eq major-mode 'dired-mode)
-      (kill-buffer my-dired-before-buffer)))
-
-(defadvice dired-up-directory
-  (before kill-up-dired-buffer activate)
-  (setq my-dired-before-buffer (current-buffer)))
-
-(defadvice dired-up-directory
-  (after kill-up-dired-buffer-after activate)
-  (if (eq major-mode 'dired-mode)
-      (kill-buffer my-dired-before-buffer)))
+;;(defvar my-dired-before-buffer nil)
+;;(defadvice dired-advertised-find-file
+;;  (before kill-dired-buffer activate)
+;;  (setq my-dired-before-buffer (current-buffer)))
+;;
+;;(defadvice dired-advertised-find-file
+;;  (after kill-dired-buffer-after activate)
+;;  (if (eq major-mode 'dired-mode)
+;;      (kill-buffer my-dired-before-buffer)))
+;;
+;;(defadvice dired-up-directory
+;;  (before kill-up-dired-buffer activate)
+;;  (setq my-dired-before-buffer (current-buffer)))
+;;
+;;(defadvice dired-up-directory
+;;  (after kill-up-dired-buffer-after activate)
+;;  (if (eq major-mode 'dired-mode)
+;;      (kill-buffer my-dired-before-buffer)))
 
 ;;popwin.el
 (when (require 'popwin)
