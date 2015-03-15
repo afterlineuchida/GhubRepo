@@ -821,5 +821,13 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (lambda ()
   (smart-newline-mode t)))
 
+;; rainbow-mode.el
+(require 'rainbow-mode)
+ (defun my-rainbow-mode-turn-on ()
+   (rainbow-mode t))
+ (add-hook 'css-mode-hook 'my-rainbow-mode-turn-on)
+ (add-hook 'scss-mode-hook 'my-rainbow-mode-turn-on)
+ (add-hook 'html-mode-hook 'my-rainbow-mode-turn-on)
+
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
