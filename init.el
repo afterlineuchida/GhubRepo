@@ -143,7 +143,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (set-background-color "Black")
   (set-foreground-color "White")
   (set-cursor-color "Yellow")
-  (set-frame-parameter nil 'alpha 83);←透過具合
+  (set-frame-parameter nil 'alpha 80);←透過具合
 ))
 
 ;; cua-mode
