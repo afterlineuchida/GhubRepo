@@ -829,5 +829,18 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
  (add-hook 'scss-mode-hook 'my-rainbow-mode-turn-on)
  (add-hook 'html-mode-hook 'my-rainbow-mode-turn-on)
 
+;; ===============================
+;; evil
+;; ===============================
+(require 'evil)
+(evil-mode t)
+(define-key evil-normal-state-map " " 'dired-jump)
+(define-key evil-normal-state-map "\C-e" 'end-of-line)
+(define-key evil-insert-state-map "\C-d" 'delete-char)
+
+;; evil-surround
+(require 'evil-surround)
+(global-evil-surround-mode 1)
+
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
