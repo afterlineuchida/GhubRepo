@@ -733,7 +733,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;; key-combo.el
 (require 'key-combo)
-(global-key-combo-mode 1)
+;;(global-key-combo-mode 1)
 ;;; 各モードに対するキー設定
 (setq key-combo-lisp-mode-hooks
       '(lisp-mode-hook
