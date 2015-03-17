@@ -841,7 +841,6 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (require 'evil)
 (evil-mode t)
 (setcdr evil-insert-state-map nil)
-(define-key evil-normal-state-map (kbd "i"  ) 'evil-emacs-state)
 (define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
 (define-key evil-normal-state-map (kbd "M-+") 'evil-numbers/inc-at-pt)
 (define-key evil-normal-state-map (kbd "M-_") 'evil-numbers/dec-at-pt)
