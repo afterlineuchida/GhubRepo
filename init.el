@@ -401,12 +401,13 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (define-key global-map (kbd "M-.")  	'helm-etags-select)
 
 (define-key helm-map (kbd "C-h") 'delete-backward-char)
+(define-key helm-map (kbd "TAB") 'helm-execute-persistent-action)
 (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
 (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
-(define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
+(define-key helm-mini-map (kbd "TAB") 'helm-execute-persistent-action)
 
 ;; helm-ag
-(setq helm-ag-base-command "ag --nocolor --nogroup")
+(setq helm-ag-base-command "ag --nocolor --nogroup -S")
 
 (custom-set-variables
    '(helm-truncate-lines t)
