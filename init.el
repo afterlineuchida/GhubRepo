@@ -840,9 +840,14 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;; ===============================
 (require 'evil)
 (evil-mode t)
-(define-key evil-normal-state-map " " 'dired-jump)
-(define-key evil-normal-state-map "\C-e" 'end-of-line)
-(define-key evil-insert-state-map "\C-d" 'delete-char)
+(setcdr evil-insert-state-map nil)
+(define-key evil-normal-state-map (kbd "i"  ) 'evil-emacs-state)
+(define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
+(define-key evil-normal-state-map (kbd "M-+") 'evil-numbers/inc-at-pt)
+(define-key evil-normal-state-map (kbd "M-_") 'evil-numbers/dec-at-pt)
+(define-key evil-insert-state-map [escape] 'evil-normal-state)
+;(define-key evil-emacs-state-map [escape] 'evil-normal-state)
+;(define-key evil-emacs-state-map (kbd "C-[") 'evil-normal-state)
 
 ;; evil-surround
 (require 'evil-surround)
