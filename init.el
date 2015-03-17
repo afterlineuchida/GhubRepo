@@ -146,6 +146,11 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (set-frame-parameter nil 'alpha 80);←透過具合
 ))
 
+;; Ujelly-beans(color-scheme)
+(if window-system
+     (when (>= emacs-major-version 24)
+       (when (require 'ujelly-theme)
+         (load-theme 'ujelly t))))
 ;; cua-mode
 (cua-mode t)
 (setq cua-enable-cua-keys nil)
