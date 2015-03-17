@@ -404,7 +404,6 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (define-key helm-map (kbd "TAB") 'helm-execute-persistent-action)
 (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
 (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
-(define-key helm-mini-map (kbd "TAB") 'helm-execute-persistent-action)
 
 ;; helm-ag
 (setq helm-ag-base-command "ag --nocolor --nogroup -S")
