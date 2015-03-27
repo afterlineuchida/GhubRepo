@@ -387,6 +387,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (require 'helm-ag)
 (require 'helm-descbinds)
 (require 'helm-ls-git)
+;(require 'helm-gtags)
 (helm-mode 1)
 
 (define-key global-map (kbd "M-x")    	'helm-M-x)
@@ -398,12 +399,13 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;(define-key global-map (kbd "C-x b")  	'helm-buffers-list)
 (define-key global-map (kbd "C-;")  	'helm-mini)
 (define-key global-map (kbd "C-c b")  	'helm-descbinds)
-(define-key global-map (kbd "M-.")  	'helm-etags-select)
+;(define-key global-map (kbd "M-.")  	'helm-gtags-find-tag)
+(define-key global-map (kbd "C-M-z")  	'helm-resume)
 
 (define-key helm-map (kbd "C-h") 'delete-backward-char)
-(define-key helm-map (kbd "TAB") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-z") 'helm-execute-persistent-action)
 (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
-(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
+(define-key helm-find-files-map (kbd "C-z") 'helm-execute-persistent-action)
 
 ;; helm-ag
 (setq helm-ag-base-command "ag --nocolor --nogroup -S")
