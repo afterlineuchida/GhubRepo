@@ -945,5 +945,35 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   )
 (define-key markdown-mode-map "\C-c \C-c" 'markdown-render-w3m)
 
+;; dired evil-mode
+(require 'f)
+
+(evil-make-overriding-map dired-mode-map 'normal)
+(evil-define-key 'normal dired-mode-map
+  ";" (lookup-key evil-motion-state-map ";")
+  "j" 'dired-next-line                        ; 人差し指
+  "k" 'dired-previous-line                    ; 中指
+  "h" 'dired-up-directory                     ; 人差し指の左
+  "l" 'keu-dired-down-directory               ; 薬指
+  "m" (lookup-key evil-normal-state-map "m")
+  "w" (lookup-key evil-normal-state-map "w")
+  (kbd "SPC")   (lookup-key dired-mode-map "m")
+  (kbd "S-SPC") (lookup-key dired-mode-map "d")
+  )
+
+(defun keu-dired-down-directory ()
+  "[Dired command] Go down to the directory."
+  (interactive)
+  (condition-case err
+      (let path (dired-get-file-for-visit)
+        (if (f-directory? path)
+            (dired-find-file)
+            (message "This is not directory!")))
+    (error (message "%s" (cadr err)))))
+
+;; dash-at-point
+(global-set-key "\C-cd" 'dash-at-point)
+(global-set-key "\C-ce" 'dash-at-point-with-docset)
+
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
