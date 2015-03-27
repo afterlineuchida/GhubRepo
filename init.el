@@ -551,6 +551,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (load-library "migemo")
 (migemo-init)
 
+;; リモートのファイルは確認しない
+(setq recentf-exclude '("^/[^/:]+:"))
+
 ;;vagrant-tramp
 (eval-after-load 'tramp
   '(vagrant-tramp-enable))
