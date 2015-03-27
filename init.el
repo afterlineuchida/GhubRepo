@@ -528,6 +528,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (set-face-foreground 'magit-diff-add "#b9ca4a") ; 追加した部分を緑に
 (set-face-foreground 'magit-diff-del "#d54e53")  ; 削除した 部分を赤に
 (set-face-background 'magit-item-highlight "#000000") ; 選択項目ハイライトがうっとうしいので背景色と同化
+;; 72 文字折り返しをオミット
+(add-hook 'git-commit-mode-hook 'turn-off-auto-fill)
 
 ;;git-gutter-fringe+.el
 (require 'git-gutter+)
