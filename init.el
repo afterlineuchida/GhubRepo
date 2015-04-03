@@ -984,8 +984,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
     (error (message "%s" (cadr err)))))
 
 ;; dash-at-point
-(global-set-key "\C-cd" 'dash-at-point)
-(global-set-key "\C-ce" 'dash-at-point-with-docset)
+;(global-set-key "\C-cd" 'dash-at-point)
+;(global-set-key "\C-ce" 'dash-at-point-with-docset)
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
