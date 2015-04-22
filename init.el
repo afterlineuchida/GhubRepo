@@ -627,8 +627,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;;point-undo
 (require 'point-undo)
-(define-key global-map (kbd "C-u") 'point-undo)
-(define-key global-map (kbd "C-M-u") 'point-redo)
+;(define-key global-map (kbd "C-u") 'point-undo)
+;(define-key global-map (kbd "C-M-u") 'point-redo)
 
 ;; revert-buffer without asking
 (defun revert-buffer-force()
