@@ -907,6 +907,28 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;; ===============================
 ;; evil
 ;; ===============================
+;; 挿入ステートを抜けるときにカーソルを後退する
+(setq evil-move-cursor-back nil)
+
+(defadvice evil-paste-pop (around evil-paste-or-move-line activate)
+  ;; evil-paste-popできなかったらprevious-lineする
+  "If there is no just-yanked stretch of killed text, just move
+to previous line."
+  (condition-case err
+      ad-do-it
+    (error (if (eq this-command 'evil-paste-pop)
+               (call-interactively 'previous-line)
+             (signal (car err) (cdr err))))))
+(defadvice evil-paste-pop-next (around evil-paste-or-move-line activate)
+  ;; evil-paste-pop-nextできなかったらnext-lineする
+  "If there is no just-yanked stretch of killed text, just move
+to next line."
+  (condition-case err
+      ad-do-it
+    (error (if (eq this-command 'evil-paste-pop-next)
+               (call-interactively 'next-line)
+             (signal (car err) (cdr err))))))
+
 (require 'evil)
 (evil-mode t)
 (setcdr evil-insert-state-map nil)
@@ -916,8 +938,6 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (define-key evil-insert-state-map [escape] 'evil-normal-state)
 ;(define-key evil-emacs-state-map [escape] 'evil-normal-state)
 ;(define-key evil-emacs-state-map (kbd "C-[") 'evil-normal-state)
-
-(evil-move-cursor-back nil)
 
 ;; evil-surround
 (require 'evil-surround)
