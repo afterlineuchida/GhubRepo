@@ -36,6 +36,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (setq default-buffer-file-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
+(setenv "LANG" "ja_JP.UTF-8")
 
 ;; Mac用フォント設定
 ;; http://tcnksm.sakura.ne.jp/blog/2012/04/02/emacs/
