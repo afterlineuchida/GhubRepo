@@ -282,7 +282,11 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;; ディレクトリを再帰的にコピーする
 (setq dired-recursive-copies 'always)
 ;; diredバッファでC-sした時にファイル名だけにマッチするように
-(set(defvar dired-various-sort-type
+(setq dired-isearch-filenames t)
+;; diredのファイルサイズ表記を"MB,KB"のように変更
+(setq dired-listing-switches "-alh")
+;; diredのソートを便利に。
+(defvar dired-various-sort-type
   '(("S" . "size")
     ("X" . "extension")
     ("v" . "version")
@@ -340,7 +344,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
                '(lambda ()
                   (interactive)
                   (anything '(anything-c-source-dired-various-sort))))
-             ))q dired-isearch-filenames t)
+             ))
 
 ;;FTP接続
 ;;C-x d /username@hostname:/directory/
