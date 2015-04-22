@@ -381,7 +381,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (require 'php-mode)
 (add-to-list 'auto-mode-alist '("\\.php$'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.ctp$'" . php-mode))
-(setq php-mode-force-pear t)
+(setq php-mode-force-pear nil)
 (add-hook 'php-mode-hook
           (lambda ()
             (defun ywb-php-lineup-arglist-intro (langelem)
