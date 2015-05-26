@@ -493,11 +493,14 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
                            (setq wgrep-enable-key "r")      ; "r" キーで編集モードに
                            (wgrep-ag-setup)))
 
+(require 'jsx-mode)
+(add-to-list 'auto-mode-alist '("\\.jsx$'" . jsx-mode))
+
 ;;flycheck
 (require 'flycheck)
 (add-hook 'php-mode-hook 'flycheck-mode)
 (add-hook 'ruby-mode-hook 'flycheck-mode)
-;(add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
+(add-hook 'jsx-mode-hook 'flycheck-mode)
 ;(add-hook 'web-mode-hook 'flycheck-mode)
 ;(add-hook 'js-mode-hook 'flycheck-mode)
 
@@ -943,23 +946,25 @@ to next line."
 (require 'evil-surround)
 (global-evil-surround-mode 1)
 
+(require 'powerline-evil)
+
 ;; powerline.el
-(require 'powerline)
-(set-face-attribute 'mode-line nil
-                    :foreground "#fff"
-                    :background "#FF0066"
-                    :box nil)
-
-(set-face-attribute 'powerline-active1 nil
-                    :foreground "#fff"
-                    :background "#FF6699"
-                    :inherit 'mode-line)
-
-(set-face-attribute 'powerline-active2 nil
-                    :foreground "#000"
-                    :background "#ffaeb9"
-                    :inherit 'mode-line)
-(powerline-default-theme)
+;(require 'powerline)
+;(set-face-attribute 'mode-line nil
+;                    :foreground "#fff"
+;                    :background "#FF0066"
+;                    :box nil)
+;
+;(set-face-attribute 'powerline-active1 nil
+;                    :foreground "#fff"
+;                    :background "#FF6699"
+;                    :inherit 'mode-line)
+;
+;(set-face-attribute 'powerline-active2 nil
+;                    :foreground "#000"
+;                    :background "#ffaeb9"
+;                    :inherit 'mode-line)
+;(powerline-default-theme)
 
 ;; markdown-preview
 (require 'w3m)
