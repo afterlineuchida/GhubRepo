@@ -12,7 +12,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;; ロードパス
 (setq load-path (append
-                 '("~/.emacs.d")
+                 '("~/.emacs.d/lisp")
                  load-path))
 
 ;;package
@@ -494,7 +494,11 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
                            (wgrep-ag-setup)))
 
 (require 'jsx-mode)
-(add-to-list 'auto-mode-alist '("\\.jsx$'" . jsx-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . jsx-mode))
+(autoload 'jsx-mode "jsx-mode" "JSX mode" t)
+
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 ;;flycheck
 (require 'flycheck)
@@ -788,6 +792,12 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (define-key global-map
   "\C-cG" 'scheme-other-window)
 
+;; slime
+(setq inferior-lisp-program "/usr/local/bin/clisp")
+(add-to-list 'load-path "/Applications/slime")
+(require 'slime)
+(slime-setup)
+
 ;; markdown-mode
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
@@ -1016,6 +1026,8 @@ to next line."
 ;; dash-at-point
 ;(global-set-key "\C-cd" 'dash-at-point)
 ;(global-set-key "\C-ce" 'dash-at-point-with-docset)
+
+(require 'restclient)
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
