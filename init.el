@@ -55,7 +55,6 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
       '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.1)));; Mac用フォント設定
 
 ;;yalinum
-(toggle-scroll-bar nil) ;スクロール非表示
 (global-yalinum-mode t)
 (set-face-background 'yalinum-bar-face "DarkOliveGreen")
 
@@ -765,8 +764,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
                                         ("helm" :regexp t :height 0.4)
-										;("magit" :regexp t :height 0.5)
+										("magit" :regexp t :height 0.6)
 										("COMMIT_EDITMSG" :height 0.3)
+										("*HTTP Response*" :height 0.4)
                                         )))
 
 ;; emacsでGauche
@@ -1028,6 +1028,10 @@ to next line."
 ;(global-set-key "\C-ce" 'dash-at-point-with-docset)
 
 (require 'restclient)
+(add-to-list 'auto-mode-alist '("\\.rc$'" . restclient-mode))
+(require 'json-reformat)
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
+;; スクロール非表示
+(toggle-scroll-bar nil)
