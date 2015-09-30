@@ -79,6 +79,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (global-set-key (kbd "C-c e") 'eshell)							;eshell
 (global-set-key (kbd "C-c l") 'load-file)						;load-file
 (global-set-key (kbd "C-M-k") 'my-kill-current-buffer)			;kill-buffer
+(global-set-key (kbd "C-c p") 'json-pretty-print-buffer)		;json-pritty-print
 
 ;; （＝揃えはよく使うのでワンストロークで）
 (global-set-key (kbd "C-]")
@@ -1061,6 +1062,10 @@ to next line."
 (defun char-unicode (char) (encode-char char 'ucs))
 (defun unicode-char (code) (decode-char 'ucs code))
 
+;; ace-jump-mode
+(require 'ace-jump-mode)
+;;If you use evil
+(define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
 
 
 ;; スタートアップ非表示
