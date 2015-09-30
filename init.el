@@ -1027,9 +1027,41 @@ to next line."
 ;(global-set-key "\C-cd" 'dash-at-point)
 ;(global-set-key "\C-ce" 'dash-at-point-with-docset)
 
+(require 'json-reformat)
 (require 'restclient)
 (add-to-list 'auto-mode-alist '("\\.rc$'" . restclient-mode))
-(require 'json-reformat)
+
+
+;; #+:Emacs
+(defun unicode-unescape-region (start end)
+  "指定した範囲のUnicodeエスケープ文字(\\uXXXX)をデコードする."
+  (interactive "*r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (re-search-forward "\\\\u\\([[:xdigit:]]\\{4\\}\\)" nil t)
+      (replace-match (string (unicode-char
+                              (string-to-number (match-string 1) 16)))
+                     nil t))))
+
+(defun unicode-escape-region (&optional start end)
+  "指定した範囲の文字をUnicodeエスケープする."
+  (interactive "*r")
+  (save-restriction
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (while (re-search-forward "." nil t)
+      (replace-match (format "\\u%04x"
+                             (char-unicode
+                              (char (match-string 0) 0)))
+                     nil t))))
+
+;; #+:Emacs
+;; こちらも参照→ http://github.com/kosh04/emacs-lisp > xyzzy.el
+(defun char-unicode (char) (encode-char char 'ucs))
+(defun unicode-char (code) (decode-char 'ucs code))
+
+
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
