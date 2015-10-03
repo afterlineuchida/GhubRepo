@@ -759,8 +759,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
                                         ("helm" :regexp t :height 0.4)
-										("magit" :regexp t :height 0.6)
-										;("COMMIT_EDITMSG" :height 0.3)
+										("*magit:" :regexp t :height 0.6)
+										("*magit-" :noselect :height 0.4)
+										("COMMIT_EDITMSG" :height 0.3)
 										("*HTTP Response*" :height 0.4)
                                         )))
 
