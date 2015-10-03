@@ -474,13 +474,16 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (setq helm-ag-base-command "ag --nocolor --nogroup -S")
 
 (custom-set-variables
-   '(helm-truncate-lines t)
-   '(helm-delete-minibuffer-contents-from-point t)
-   '(helm-mini-default-sources '(helm-source-buffers-list
-                                 helm-source-ls-git
-                                 helm-source-files-in-current-dir
-                                 helm-source-recentf
-                                 )))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(helm-delete-minibuffer-contents-from-point t)
+ '(helm-mini-default-sources
+   (quote
+	(helm-source-buffers-list helm-source-ls-git helm-source-files-in-current-dir helm-source-recentf)))
+ '(helm-truncate-lines t)
+ '(magit-log-arguments (quote ("--graph" "--decorate" "-n256"))))
 ;; ag.el
 (require 'ag)
 (setq ag-highlight-search t)  ; 検索キーワードをハイライト
@@ -595,9 +598,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (require 'magit)
 (define-key global-map (kbd "C-c m") 'magit-status)
 ;; 色変更
-(set-face-foreground 'magit-diff-add "#b9ca4a") ; 追加した部分を緑に
-(set-face-foreground 'magit-diff-del "#d54e53")  ; 削除した 部分を赤に
-(set-face-background 'magit-item-highlight "#000000") ; 選択項目ハイライトがうっとうしいので背景色と同化
+;(set-face-foreground 'magit-diff-add "#b9ca4a") ; 追加した部分を緑に
+;(set-face-foreground 'magit-diff-del "#d54e53")  ; 削除した 部分を赤に
+;(set-face-background 'magit-item-highlight "#000000") ; 選択項目ハイライトがうっとうしいので背景色と同化
 ;; 72 文字折り返しをオミット
 (add-hook 'git-commit-mode-hook 'turn-off-auto-fill)
 
@@ -756,8 +759,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
                                         ("helm" :regexp t :height 0.4)
-										("magit" :height 0.6)
-										("COMMIT_EDITMSG" :height 0.3)
+										("magit" :regexp t :height 0.6)
+										;("COMMIT_EDITMSG" :height 0.3)
 										("*HTTP Response*" :height 0.4)
                                         )))
 
@@ -944,6 +947,10 @@ to next line."
 ;(define-key evil-emacs-state-map [escape] 'evil-normal-state)
 ;(define-key evil-emacs-state-map (kbd "C-[") 'evil-normal-state)
 
+;; for magit
+(eval-after-load 'evil-core
+  '(evil-set-initial-state 'magit-popup-mode 'emacs))
+
 ;; evil-surround
 (require 'evil-surround)
 (global-evil-surround-mode 1)
@@ -967,6 +974,7 @@ to next line."
                     :background "#ffaeb9"
                     :inherit 'mode-line)
 (powerline-default-theme)
+
 
 ;; markdown-preview
 (require 'w3m)
@@ -1084,3 +1092,17 @@ to next line."
 (setq inhibit-startup-message t)
 ;; スクロール非表示
 (toggle-scroll-bar nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(web-mode-comment-face ((t (:foreground "#D9333F"))))
+ '(web-mode-css-at-rule-face ((t (:foreground "#FF7F00"))))
+ '(web-mode-css-pseudo-class-face ((t (:foreground "#FF7F00"))))
+ '(web-mode-css-rule-face ((t (:foreground "#A0D8EF"))))
+ '(web-mode-doctype-face ((t (:foreground "#82AE46"))))
+ '(web-mode-html-attr-name-face ((t (:foreground "#C97586"))))
+ '(web-mode-html-attr-value-face ((t (:foreground "#82AE46"))))
+ '(web-mode-html-tag-face ((t (:foreground "#E6B422" :weight bold))))
+ '(web-mode-server-comment-face ((t (:foreground "#D9333F")))))
