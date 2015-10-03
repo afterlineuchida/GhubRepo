@@ -707,15 +707,6 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (global-set-key (kbd "C-t") 'rotate-layout)
 (global-set-key (kbd "M-t") 'rotate-window)
 
-;;cake.el
-;(require 'cake)
-
-
-;;cake2.el
-;(require 'cake2)
-;(global-cake2 t)
-;(cake2-set-default-keymap)
-
 ;;emacs-nav
 (setq load-path (cons "~/.emacs.d/elpa/emacs-nav-49" load-path))
 (require 'nav)
@@ -765,7 +756,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
                                         ("helm" :regexp t :height 0.4)
-										("magit" :regexp t :height 0.6)
+										("magit" :height 0.6)
 										("COMMIT_EDITMSG" :height 0.3)
 										("*HTTP Response*" :height 0.4)
                                         )))
@@ -960,22 +951,22 @@ to next line."
 (require 'powerline-evil)
 
 ;; powerline.el
-;(require 'powerline)
-;(set-face-attribute 'mode-line nil
-;                    :foreground "#fff"
-;                    :background "#FF0066"
-;                    :box nil)
-;
-;(set-face-attribute 'powerline-active1 nil
-;                    :foreground "#fff"
-;                    :background "#FF6699"
-;                    :inherit 'mode-line)
-;
-;(set-face-attribute 'powerline-active2 nil
-;                    :foreground "#000"
-;                    :background "#ffaeb9"
-;                    :inherit 'mode-line)
-;(powerline-default-theme)
+(require 'powerline)
+(set-face-attribute 'mode-line nil
+                    :foreground "#fff"
+                    :background "#FF0066"
+                    :box nil)
+
+(set-face-attribute 'powerline-active1 nil
+                    :foreground "#fff"
+                    :background "#FF6699"
+                    :inherit 'mode-line)
+
+(set-face-attribute 'powerline-active2 nil
+                    :foreground "#000"
+                    :background "#ffaeb9"
+                    :inherit 'mode-line)
+(powerline-default-theme)
 
 ;; markdown-preview
 (require 'w3m)
@@ -1067,6 +1058,27 @@ to next line."
 ;;If you use evil
 (define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
 
+;; term+ config
+(require 'term+)
+(require 'term+mux)
+;(require 'xterm-color)
+;; shell の存在を確認
+(defun skt:shell ()
+  (or (executable-find "zsh")
+      (executable-find "bash")
+      ;; (executable-find "f_zsh") ;; Emacs + Cygwin を利用する人は Zsh の代りにこれにしてください
+      ;; (executable-find "f_bash") ;; Emacs + Cygwin を利用する人は Bash の代りにこれにしてください
+      (executable-find "cmdproxy")
+      (error "can't find 'shell' command in PATH!!")))
+;; Shell 名の設定
+(setq shell-file-name (skt:shell))
+(setenv "SHELL" shell-file-name)
+(setq explicit-shell-file-name shell-file-name)
+(setq multi-term-program "/usr/local/bin/zsh")
+(setenv "TERMINFO" "~/.terminfo")
+
+;; Emacs が保持する terminfo を利用する
+(setq system-uses-terminfo nil)
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
