@@ -79,7 +79,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (global-set-key (kbd "C-c e") 'eshell)							;eshell
 (global-set-key (kbd "C-c l") 'load-file)						;load-file
 (global-set-key (kbd "C-M-k") 'my-kill-current-buffer)			;kill-buffer
-(global-set-key (kbd "C-c p") 'json-pretty-print-buffer)		;json-pritty-print
+(global-set-key (kbd "C-c C-p") 'json-pretty-print-buffer)		;json-pritty-print
+(global-set-key (kbd "C-c C-u") 'unicode-unescape-region)		;unicode-unescape-region
 
 ;; （＝揃えはよく使うのでワンストロークで）
 (global-set-key (kbd "C-]")
@@ -382,8 +383,12 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (add-to-list 'auto-mode-alist '("\\.php$'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.ctp$'" . php-mode))
 (setq php-mode-force-pear nil)
+(add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
 (add-hook 'php-mode-hook
           (lambda ()
+			(require 'php-completion)
+			(php-completion-mode t)
+			(subword-mode t)
             (defun ywb-php-lineup-arglist-intro (langelem)
               (save-excursion
                 (goto-char (cdr langelem))
@@ -457,7 +462,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (define-key global-map (kbd "C-x C-f")	'helm-find-files)
 (define-key global-map (kbd "C-x C-r")	'helm-recentf)
 (define-key global-map (kbd "C-c o")	'helm-occur)
-(define-key global-map (kbd "C-c a")	'helm-ag)
+(define-key global-map (kbd "C-c a")	'helm-do-ag)
 (define-key global-map (kbd "M-y")    	'helm-show-kill-ring)
 ;(define-key global-map (kbd "C-x b")  	'helm-buffers-list)
 (define-key global-map (kbd "C-;")  	'helm-mini)
@@ -481,7 +486,10 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
  '(helm-delete-minibuffer-contents-from-point t)
  '(helm-mini-default-sources
    (quote
-	(helm-source-buffers-list helm-source-ls-git helm-source-files-in-current-dir helm-source-recentf)))
+	(helm-source-buffers-list
+	 helm-source-ls-git
+	 helm-source-files-in-current-dir
+	 helm-source-recentf)))
  '(helm-truncate-lines t)
  '(magit-log-arguments (quote ("--graph" "--decorate" "-n256"))))
 ;; ag.el
@@ -758,12 +766,23 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (setq display-buffer-function 'popwin:display-buffer)
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
-                                        ("helm" :regexp t :height 0.4)
-										("*magit:" :regexp t :height 0.6)
+                                        ;("helm" :regexp t :height 0.4)
+										("*magit:" :regexp t :height 0.9)
+										("COMMIT_EDITMSG" :height 0.8)
 										("*magit-" :noselect :height 0.4)
-										("COMMIT_EDITMSG" :height 0.3)
-										("*HTTP Response*" :height 0.4)
+										("*HTTP Response*" :height 0.6)
                                         )))
+ ;; disable popwin-mode in an active Helm session It should be disabled
+ ;; otherwise it will conflict with other window opened by Helm persistent
+ ;; action, such as *Help* window.
+(push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
+(add-hook 'helm-after-initialize-hook (lambda ()
+                                          (popwin:display-buffer helm-buffer t)
+                                          (popwin-mode -1)))
+
+ ;;  Restore popwin-mode after a Helm session finishes.
+ (add-hook 'helm-cleanup-hook (lambda () (popwin-mode 1)))
+
 
 ;; emacsでGauche
 (setq process-coding-system-alist
