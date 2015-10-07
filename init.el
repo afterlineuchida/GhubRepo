@@ -12,8 +12,38 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;; ロードパス
 (setq load-path (append
-                 '("~/.emacs.d/lisp")
+                 '("~/.emacs.d/lisp"
+				   "~/.wl"
+				   "~/.folders")
                  load-path))
+
+;; set eshell aliases
+(setq eshell-command-aliases-list
+      (append
+	   (list
+		(list "desk" "cd ~/Desktop")
+		(list "swipl" "/opt/local/bin/swipl")
+		(list "cd_htdocs" "cd /Applications/MAMP/htdocs") ;#ここのパスは適宜
+		(list "cd_frekul" "cd_htdocs;cd frekul.vpn")
+		(list "cd_lumit" "cd_htdocs;cd lumit")
+		(list "cd_tadaoto" "cd_htdocs;cd tadaoto")
+		(list "cd_livon" "cd_htdocs;cd livon")
+		(list "cd_webtoru" "cd_htdocs;cd webtoru")
+		(list "cd_ws" "cd ~/MyDocuments/WorldScape")
+		(list "ssh_l" "ssh lumit")
+		(list "ssh_f" "ssh frekul")
+		(list "sbash" "source ~/.bashrc")
+		(list "livon_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul livon_release")
+		(list "lumit_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit l_release")
+		(list "af_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul af_release")
+		(list "f_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul f_release")
+		(list "dvj_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_dvj dvj_release")
+		(list "dtada_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto dev_release")
+		(list "dtada_mi" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto multiple_import")
+		(list "cakeshell" "/Applications/MAMP/bin/php/php5.3.29/bin/php /Applications/MAMP/htdocs/frekul.vpn/cake/console/cake.php")
+		(list "rm_cache" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul rm_cache"))
+	   eshell-command-aliases-list))
+
 
 ;;package
 (require 'package);
@@ -766,7 +796,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (setq display-buffer-function 'popwin:display-buffer)
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
-                                        ;("helm" :regexp t :height 0.4)
+                                        ("helm" :regexp t :height 0.4)
 										("*magit:" :regexp t :height 0.9)
 										("COMMIT_EDITMSG" :height 0.8)
 										("*magit-" :noselect :height 0.4)
@@ -775,7 +805,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
  ;; disable popwin-mode in an active Helm session It should be disabled
  ;; otherwise it will conflict with other window opened by Helm persistent
  ;; action, such as *Help* window.
-(push '("^\*helm.+\*$" :regexp t) popwin:special-display-config)
+(push '("^\*helm.+\*$" :regexp t :height 0.5) popwin:special-display-config)
 (add-hook 'helm-after-initialize-hook (lambda ()
                                           (popwin:display-buffer helm-buffer t)
                                           (popwin-mode -1)))
@@ -1108,10 +1138,18 @@ to next line."
 ;; Emacs が保持する terminfo を利用する
 (setq system-uses-terminfo nil)
 
+;; Twitter
+(require 'twittering-mode);
+
+;; Wanderlust
+(autoload 'wl "wl" "Wanderlust" t)
+(autoload 'wl-draft "wl" "Write draft with Wanderlust." t)
+
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
 ;; スクロール非表示
 (toggle-scroll-bar nil)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
