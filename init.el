@@ -17,34 +17,6 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 				   "~/.folders")
                  load-path))
 
-;; set eshell aliases
-(setq eshell-command-aliases-list
-      (append
-	   (list
-		(list "desk" "cd ~/Desktop")
-		(list "swipl" "/opt/local/bin/swipl")
-		(list "cd_htdocs" "cd /Applications/MAMP/htdocs") ;#ここのパスは適宜
-		(list "cd_frekul" "cd_htdocs;cd frekul.vpn")
-		(list "cd_lumit" "cd_htdocs;cd lumit")
-		(list "cd_tadaoto" "cd_htdocs;cd tadaoto")
-		(list "cd_livon" "cd_htdocs;cd livon")
-		(list "cd_webtoru" "cd_htdocs;cd webtoru")
-		(list "cd_ws" "cd ~/MyDocuments/WorldScape")
-		(list "ssh_l" "ssh lumit")
-		(list "ssh_f" "ssh frekul")
-		(list "sbash" "source ~/.bashrc")
-		(list "livon_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul livon_release")
-		(list "lumit_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit l_release")
-		(list "af_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul af_release")
-		(list "f_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul f_release")
-		(list "dvj_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_dvj dvj_release")
-		(list "dtada_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto dev_release")
-		(list "dtada_mi" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto multiple_import")
-		(list "cakeshell" "/Applications/MAMP/bin/php/php5.3.29/bin/php /Applications/MAMP/htdocs/frekul.vpn/cake/console/cake.php")
-		(list "rm_cache" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul rm_cache"))
-	   eshell-command-aliases-list))
-
-
 ;;package
 (require 'package);
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -299,6 +271,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;; 1行づつスクロールする
 (setq scroll-conservatively 1)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; dired.conf
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; diredを便利にする
 (require 'dired-x)
 
@@ -377,6 +352,58 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
                   (anything '(anything-c-source-dired-various-sort))))
              ))
 
+(defun dired-dwim-find-alternate-file ()
+  "画面分割に適した `dired-find-alternate-file'．
+通常は `dired-find-alternate-file' を行うが，画面分割されていて
+他方のウィンドウに同じバッファが表示されていれば `dired-find-file'．"
+  (interactive)
+  (cond
+   ;; 同じバッファが他のwindowにある場合
+   ((delq (selected-window) (get-buffer-window-list))
+    (dired-find-file))
+   ;; 同じバッファが他のwindowにない場合
+   (t
+    (dired-find-alternate-file))))
+
+(defun dired-up-alternate-directory ()
+  "バッファを増やさず上のディレクトリに移動．"
+  (interactive)
+  (let* ((dir (dired-current-directory))
+         (up (file-name-directory (directory-file-name dir))))
+    (or (dired-goto-file (directory-file-name dir))
+        ;; Only try dired-goto-subdir if buffer has more than one dir.
+        (and (cdr dired-subdir-alist)
+             (dired-goto-subdir up))
+        (progn
+          (find-alternate-file up)
+          (dired-goto-file dir)))))
+
+(defun dired-dwim-up-alternate-directory ()
+  "画面分割に適した `dired-up-alternate-directory'．"
+  (interactive)
+  (cond
+   ;; 同じバッファが他のwindowにある場合
+   ((delq (selected-window) (get-buffer-window-list))
+    (dired-up-directory))
+   ;; 同じバッファが他のwindowにない場合
+   (t
+    (dired-up-alternate-directory))))
+
+(defun dired-dwim-quit-window ()
+  "画面分割に適した `quit-window'．"
+  (interactive)
+  (quit-window (not (delq (selected-window) (get-buffer-window-list)))))
+
+;; RET 標準の dired-find-file では dired バッファが複数作られるので
+;; dired-find-alternate-file を代わりに使う
+(define-key dired-mode-map (kbd "RET") 'dired-dwim-find-alternate-file)
+(define-key dired-mode-map (kbd "C-m") 'dired-dwim-find-alternate-file)
+(define-key dired-mode-map (kbd "a") 'dired-find-file)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; /dired.conf
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;FTP接続
 ;;C-x d /username@hostname:/directory/
 
@@ -385,7 +412,6 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;(setq ange-ftp-default-user "afterlineuchida@sotsuken.rakusaba.jp")
 ;(ange-ftp-set-passwd "sotsuken.rakusaba.jp" "afterlineuchida@sotsuken.rakusaba.jp" "closeupmagic")
 (setq ange-ftp-try-passive-mode t)
-
 
 ;; デフォルトのタブ
 (setq-default indent-tabs-mode t)
@@ -413,11 +439,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (add-to-list 'auto-mode-alist '("\\.php$'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.ctp$'" . php-mode))
 (setq php-mode-force-pear nil)
-(add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
+;(add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
 (add-hook 'php-mode-hook
           (lambda ()
-			(require 'php-completion)
-			(php-completion-mode t)
 			(subword-mode t)
             (defun ywb-php-lineup-arglist-intro (langelem)
               (save-excursion
@@ -483,11 +507,13 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (require 'helm)
 (require 'helm-config)
 (require 'helm-ag)
+(require 'ac-helm)
 (require 'helm-descbinds)
 (require 'helm-ls-git)
-;(require 'helm-gtags)
+(require 'helm-gtags)
 (helm-mode 1)
 
+(define-key global-map (kbd "C-;")  	'helm-mini)
 (define-key global-map (kbd "M-x")    	'helm-M-x)
 (define-key global-map (kbd "C-x C-f")	'helm-find-files)
 (define-key global-map (kbd "C-x C-r")	'helm-recentf)
@@ -495,15 +521,28 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (define-key global-map (kbd "C-c a")	'helm-do-ag)
 (define-key global-map (kbd "M-y")    	'helm-show-kill-ring)
 ;(define-key global-map (kbd "C-x b")  	'helm-buffers-list)
-(define-key global-map (kbd "C-;")  	'helm-mini)
 (define-key global-map (kbd "C-c b")  	'helm-descbinds)
-;(define-key global-map (kbd "M-.")  	'helm-gtags-find-tag)
 (define-key global-map (kbd "C-M-z")  	'helm-resume)
 
 (define-key helm-map (kbd "C-h") 'delete-backward-char)
 (define-key helm-map (kbd "C-z") 'helm-execute-persistent-action)
 (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
 (define-key helm-find-files-map (kbd "C-z") 'helm-execute-persistent-action)
+
+;; helm-gtags
+(add-hook 'helm-gtags-mode-hook
+		  '(lambda ()
+			 (local-set-key (kbd "M-t") 'helm-gtags-find-tag)		;;入力されたタグの定義元へジャンプ
+			 (local-set-key (kbd "M-r") 'helm-gtags-find-rtag)		;;入力タグを参照する場所へジャンプ
+			 (local-set-key (kbd "M-s") 'helm-gtags-find-symbol)	;;入力したシンボルを参照する場所へジャンプ
+			 (local-set-key (kbd "M-l") 'helm-gtags-select)		;;タグ一覧からタグを選択し, その定義元にジャンプする
+			 (local-set-key (kbd "C-t") 'helm-gtags-pop-stack)		;;ジャンプ前の場所に戻る
+			 ))
+(add-hook 'php-mode-hook 'helm-gtags-mode)
+
+;; ac-helm
+(global-set-key (kbd "C-:") 'ac-complete-with-helm)
+(define-key ac-complete-mode-map (kbd "C-:") 'ac-complete-with-helm)
 
 ;; helm-ag
 (setq helm-ag-base-command "ag --nocolor --nogroup -S")
@@ -744,56 +783,21 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;                'helm-esh-pcomplete)))
 
 ;;rotate.el
-(require 'rotate)
-(global-set-key (kbd "C-t") 'rotate-layout)
-(global-set-key (kbd "M-t") 'rotate-window)
+;(require 'rotate)
+;(global-set-key (kbd "C-t") 'rotate-layout)
+;(global-set-key (kbd "M-t") 'rotate-window)
 
 ;;emacs-nav
 (setq load-path (cons "~/.emacs.d/elpa/emacs-nav-49" load-path))
 (require 'nav)
 (global-set-key (kbd "C-c n") 'nav)
 
-;; ファイルなら別バッファで、ディレクトリなら同じバッファで開く
-(defun dired-open-in-accordance-with-situation ()
-  (interactive)
-  (let ((file (dired-get-filename)))
-    (if (file-directory-p file)
-        (dired-find-alternate-file)
-      (dired-find-file))))
-
-;; dired-find-alternate-file の有効化
-(put 'dired-find-alternate-file 'disabled nil)
-;; RET 標準の dired-find-file では dired バッファが複数作られるので
-;; dired-find-alternate-file を代わりに使う
-(define-key dired-mode-map (kbd "RET") 'dired-open-in-accordance-with-situation)
-(define-key dired-mode-map (kbd "C-m") 'dired-open-in-accordance-with-situation)
-(define-key dired-mode-map (kbd "a") 'dired-find-file)
-
-;;; フォルダを開く時, 新しいバッファを作成しない
-;; バッファを作成したい時にはoやC-u ^を利用する
-;;(defvar my-dired-before-buffer nil)
-;;(defadvice dired-advertised-find-file
-;;  (before kill-dired-buffer activate)
-;;  (setq my-dired-before-buffer (current-buffer)))
-;;
-;;(defadvice dired-advertised-find-file
-;;  (after kill-dired-buffer-after activate)
-;;  (if (eq major-mode 'dired-mode)
-;;      (kill-buffer my-dired-before-buffer)))
-;;
-;;(defadvice dired-up-directory
-;;  (before kill-up-dired-buffer activate)
-;;  (setq my-dired-before-buffer (current-buffer)))
-;;
-;;(defadvice dired-up-directory
-;;  (after kill-up-dired-buffer-after activate)
-;;  (if (eq major-mode 'dired-mode)
-;;      (kill-buffer my-dired-before-buffer)))
 
 ;;popwin.el
 (when (require 'popwin)
   (setq helm-samewindow nil)
   (setq display-buffer-function 'popwin:display-buffer)
+  (setq popwin:adjust-other-windows t)
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:special-display-config '(("*compilatoin*" :noselect t)
                                         ("helm" :regexp t :height 0.4)
@@ -805,7 +809,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
  ;; disable popwin-mode in an active Helm session It should be disabled
  ;; otherwise it will conflict with other window opened by Helm persistent
  ;; action, such as *Help* window.
-(push '("^\*helm.+\*$" :regexp t :height 0.5) popwin:special-display-config)
+(push '("^\*helm.+\*$" :regexp t :height 0.5 :position :bottom) popwin:special-display-config)
 (add-hook 'helm-after-initialize-hook (lambda ()
                                           (popwin:display-buffer helm-buffer t)
                                           (popwin-mode -1)))
@@ -1049,14 +1053,14 @@ to next line."
 
 ;; dired evil-mode
 (require 'f)
-
 (evil-make-overriding-map dired-mode-map 'normal)
 (evil-define-key 'normal dired-mode-map
   ";" (lookup-key evil-motion-state-map ";")
   "j" 'dired-next-line                        ; 人差し指
   "k" 'dired-previous-line                    ; 中指
-  "h" 'dired-up-directory                     ; 人差し指の左
-  "l" 'keu-dired-down-directory               ; 薬指
+  "h" 'dired-up-alternate-directory           ; 人差し指の左
+;  "l" 'keu-dired-down-directory               ; 薬指
+  "l" 'dired-dwim-find-alternate-file        ; 薬指
   "m" (lookup-key evil-normal-state-map "m")
   "w" (lookup-key evil-normal-state-map "w")
   (kbd "SPC")   (lookup-key dired-mode-map "m")
@@ -1069,7 +1073,7 @@ to next line."
   (condition-case err
       (let path (dired-get-file-for-visit)
         (if (f-directory? path)
-            (dired-find-file)
+            (dired-dwim-find-alternate-file)
             (message "This is not directory!")))
     (error (message "%s" (cadr err)))))
 
@@ -1114,7 +1118,7 @@ to next line."
 ;; ace-jump-mode
 (require 'ace-jump-mode)
 ;;If you use evil
-(define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
+(define-key evil-normal-state-map (kbd "SPC") 'evil-ace-jump-char-mode)
 
 ;; term+ config
 (require 'term+)
@@ -1144,6 +1148,37 @@ to next line."
 ;; Wanderlust
 (autoload 'wl "wl" "Wanderlust" t)
 (autoload 'wl-draft "wl" "Write draft with Wanderlust." t)
+
+;; set eshell aliases
+(setq eshell-command-aliases-list
+      (append
+	   (list
+		(list "f" "find-file")
+		(list "desk" "cd ~/Desktop")
+		(list "swipl" "/opt/local/bin/swipl")
+		(list "cd_htdocs" "cd /Applications/MAMP/htdocs") ;#ここのパスは適宜
+		(list "cd_frekul" "cd_htdocs;cd frekul.vpn")
+		(list "cd_lumit" "cd_htdocs;cd lumit")
+		(list "cd_tadaoto" "cd_htdocs;cd tadaoto")
+		(list "cd_livon" "cd_htdocs;cd livon")
+		(list "cd_webtoru" "cd_htdocs;cd webtoru")
+		(list "cd_ws" "cd ~/MyDocuments/WorldScape")
+		(list "ssh_l" "ssh lumit")
+		(list "ssh_f" "ssh frekul")
+		(list "sbash" "source ~/.bashrc")
+		(list "livon_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul livon_release")
+		(list "lumit_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit l_release")
+		(list "dlumit_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit dl_release")
+		(list "dlumit_docker_run" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit dl_docker_run")
+		(list "af_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul af_release")
+		(list "f_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul f_release")
+		(list "dvj_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_dvj dvj_release")
+		(list "dtada_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto dev_release")
+		(list "dtada_mi" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto multiple_import")
+		(list "cakeshell" "/Applications/MAMP/bin/php/php5.3.29/bin/php /Applications/MAMP/htdocs/frekul.vpn/cake/console/cake.php")
+		(list "rm_cache" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul rm_cache"))
+	   eshell-command-aliases-list))
+
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
