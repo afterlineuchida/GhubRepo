@@ -83,6 +83,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (global-set-key (kbd "C-M-k") 'my-kill-current-buffer)			;kill-buffer
 (global-set-key (kbd "C-c C-p") 'json-pretty-print-buffer)		;json-pritty-print
 (global-set-key (kbd "C-c C-u") 'unicode-unescape-region)		;unicode-unescape-region
+(global-set-key (kbd "C-x C-c") 'nil)							;終了コマンドを無効
+(global-set-key (kbd "s-C") 'nil)								;Colorsポップアップを無効
 
 ;; （＝揃えはよく使うのでワンストロークで）
 (global-set-key (kbd "C-]")
@@ -271,9 +273,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;; 1行づつスクロールする
 (setq scroll-conservatively 1)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;============================
 ;; dired.conf
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;============================
 ;; diredを便利にする
 (require 'dired-x)
 
@@ -400,9 +402,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (define-key dired-mode-map (kbd "C-m") 'dired-dwim-find-alternate-file)
 (define-key dired-mode-map (kbd "a") 'dired-find-file)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;============================
 ;; /dired.conf
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;============================
 
 ;;FTP接続
 ;;C-x d /username@hostname:/directory/
@@ -539,6 +541,17 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 			 (local-set-key (kbd "C-t") 'helm-gtags-pop-stack)		;;ジャンプ前の場所に戻る
 			 ))
 (add-hook 'php-mode-hook 'helm-gtags-mode)
+(add-hook 'web-mode-hook 'helm-gtags-mode)
+(add-hook 'js-mode-hook 'helm-gtags-mode)
+(add-hook 'js2-mode-hook 'helm-gtags-mode)
+(add-hook 'jsx-mode-hook 'helm-gtags-mode)
+
+;; ctags
+(require 'ctags nil t)
+(setq tags-revert-without-query t)
+(setq ctags-command "ctags -R --fields=\"+afikKlmnsSzt\" ")
+(global-set-key (kbd "<f5>") 'ctags-create-or-update-tags-table)
+(global-set-key (kbd "M-.") 'ctags-search)
 
 ;; ac-helm
 (global-set-key (kbd "C-:") 'ac-complete-with-helm)
@@ -555,12 +568,12 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
  '(helm-delete-minibuffer-contents-from-point t)
  '(helm-mini-default-sources
    (quote
-	(helm-source-buffers-list
-	 helm-source-ls-git
-	 helm-source-files-in-current-dir
-	 helm-source-recentf)))
- '(helm-truncate-lines t)
- '(magit-log-arguments (quote ("--graph" "--decorate" "-n256"))))
+	(helm-source-buffers-list helm-source-ls-git helm-source-files-in-current-dir helm-source-recentf)))
+ '(helm-truncate-lines t t)
+ '(magit-log-arguments (quote ("--graph" "--decorate" "-n256")))
+ '(org-agenda-files
+   (quote
+	("~/Dropbox/org/memo.org" "/Users/akihiro_uchida/Dropbox/org/project/daily.org" "/Users/akihiro_uchida/Dropbox/org/project/project.org"))))
 ;; ag.el
 (require 'ag)
 (setq ag-highlight-search t)  ; 検索キーワードをハイライト
@@ -573,26 +586,25 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
                            (setq wgrep-enable-key "r")      ; "r" キーで編集モードに
                            (wgrep-ag-setup)))
 
-(require 'jsx-mode)
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . jsx-mode))
-(autoload 'jsx-mode "jsx-mode" "JSX mode" t)
-
 (require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 
 ;;flycheck
 (require 'flycheck)
+(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
 (add-hook 'php-mode-hook 'flycheck-mode)
 (add-hook 'ruby-mode-hook 'flycheck-mode)
 (add-hook 'jsx-mode-hook 'flycheck-mode)
 ;(add-hook 'web-mode-hook 'flycheck-mode)
-;(add-hook 'js-mode-hook 'flycheck-mode)
+(add-hook 'js2-mode-hook 'flycheck-mode)
+(add-hook 'js2-jsx-mode-hook 'flycheck-mode)
 
 ;;web-mode
 ;; インデント関係
 (defun web-mode-hook ()
   "Hooks for Web mode."
-  (setq web-mode-html-offset   4)
+  (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-offset    2)
   (setq web-mode-script-offset 4)
   (setq web-mode-php-offset    4)
@@ -610,6 +622,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (require 'undo-tree)
 (global-undo-tree-mode t)
 (global-set-key (kbd "C-M-/") 'undo-tree-redo)
+
+;; undo-hist
+(require 'undohist)
 
 
 ;;multiple-cursors etc
@@ -732,7 +747,9 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (global-set-key (kbd "<f3>") 'highlight-symbol-at-point)
 (global-set-key (kbd "M-<f3>") 'highlight-symbol-remove-all)
 
+;; ==================
 ;; Eshell
+;; ==================
 ;; Emacs 起動時に Eshell を起動
 ;(add-hook 'after-init-hook (lambda () (eshell) ))
 ;; 補完時に大文字小文字を区別しない
@@ -782,15 +799,19 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 ;                (kbd "C-N")
 ;                'helm-esh-pcomplete)))
 
-;;rotate.el
-;(require 'rotate)
-;(global-set-key (kbd "C-t") 'rotate-layout)
-;(global-set-key (kbd "M-t") 'rotate-window)
-
-;;emacs-nav
-(setq load-path (cons "~/.emacs.d/elpa/emacs-nav-49" load-path))
-(require 'nav)
-(global-set-key (kbd "C-c n") 'nav)
+;; eshell/less
+;; written by Stefan Reichoer <reichoer@web.de>
+(defun eshell/less (&rest args)
+"Invoke `view-file’ on the file.
+\"less +42 foo\" also goes to line 42 in the buffer."
+(interactive)
+(while args
+(if (string-match "\\`\\+\\([0-9]+\\)\\’" (car args))
+(let* ((line (string-to-number (match-string 1 (pop args))))
+(file (pop args)))
+(view-file file)
+(goto-line line))
+(view-file (pop args)))))
 
 
 ;;popwin.el
@@ -992,12 +1013,21 @@ to next line."
              (signal (car err) (cdr err))))))
 
 (require 'evil)
+(require 'evil-org)
+(require 'evil-leader)
+(global-evil-leader-mode)                 ; (evil-mode t)より先に設定する必要が有る
+(evil-leader/set-leader ",")              ; <Leader> を , に設定
+;; markdown-mode で ,mbp にバインド
+;(evil-leader/set-key-for-mode 'markdown-mode "mbp" 'my-blog-post)
 (evil-mode t)
 (setcdr evil-insert-state-map nil)
 (define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
 (define-key evil-normal-state-map (kbd "M-+") 'evil-numbers/inc-at-pt)
 (define-key evil-normal-state-map (kbd "M-_") 'evil-numbers/dec-at-pt)
 (define-key evil-insert-state-map [escape] 'evil-normal-state)
+(define-key evil-normal-state-map (kbd "C-t") nil)
+(evil-leader/set-key "a" 'org-agenda)
+
 ;(define-key evil-emacs-state-map [escape] 'evil-normal-state)
 ;(define-key evil-emacs-state-map (kbd "C-[") 'evil-normal-state)
 
@@ -1009,10 +1039,16 @@ to next line."
 (require 'evil-surround)
 (global-evil-surround-mode 1)
 
-(require 'powerline-evil)
+;(setq evil-default-cursor 'hbar
+;      evil-normal-state-cursor '("darkolivegreen")      ; ノーマルステートでは穏かな緑の水平バーに.
+;      evil-insert-state-cursor '("#800000" (bar . 2)))  ; 挿入ステートでは目立つ赤い垂直バーに.
+;(blink-cursor-mode -1)
 
 ;; powerline.el
 (require 'powerline)
+(require 'powerline-evil)
+(powerline-center-evil-theme)
+(setq ns-use-srgb-colorspace nil)
 (set-face-attribute 'mode-line nil
                     :foreground "#fff"
                     :background "#FF0066"
@@ -1027,7 +1063,22 @@ to next line."
                     :foreground "#000"
                     :background "#ffaeb9"
                     :inherit 'mode-line)
-(powerline-default-theme)
+; マイナーモード名を隠す
+(setq my/hidden-minor-modes
+      '(undo-tree-mode
+        eldoc-mode
+		git-gutter+-mode
+		helm-gtags-mode
+		yas-minor-mode
+        auto-complete-mode
+        magit-auto-revert-mode
+        abbrev-mode
+        helm-mode))
+
+(mapc (lambda (mode)
+          (setq minor-mode-alist
+                (cons (list mode "") (assq-delete-all mode minor-mode-alist))))
+        my/hidden-minor-modes)
 
 
 ;; markdown-preview
@@ -1180,10 +1231,98 @@ to next line."
 	   eshell-command-aliases-list))
 
 
+;;========================
+;; org-mode
+;;========================
+(require 'ox-gfm)
+(setq org-src-fontify-natively t)
+(setq org-directory "~/Dropbox/org/project")
+(setq org-agenda-files (list org-directory))
+(add-hook 'org-mode-hook
+		  '(lambda ()
+			 (evil-leader/set-key "m" 'org-capture)    ; ,m にバインド
+			 (evil-leader/set-key "x" 'org-toggle-checkbox)
+			 (evil-leader/set-key "e" 'org-set-effort)
+			 (evil-leader/set-key "n" 'org-add-note)
+			 (define-key org-mode-map (kbd "C-c C-v") 'revert-buffer)
+			 (define-key org-mode-map (kbd "C-c C-i") 'org-mark-ring-goto)
+			 (define-key org-mode-map [(control tab)] nil) ;; C-tab はウインドウの移動に使いたいのではずす
+			 ))
+
+;; capture templates
+(setq org-capture-templates
+      '(("p" "Project Task" entry (file+headline (expand-file-name "~/Dropbox/org/project/project.org") "Inbox")
+             "** TODO %?\n    %i\n    %a\n    %T")
+        ("m" "memo" entry (file (expand-file-name "~/Dropbox/org/memo.org"))
+             "* %?\n    %i\n    %a\n    %T")))
+
+; global Effort estimate values
+(setq org-global-properties (quote ((
+      "Effort_ALL" . "00:10 00:15 00:30 00:45 01:00 01:30 02:00 02:30 03:00"))))
+;; カラムビューで表示する項目
+;; Column の書式は以下.
+;; [http://orgmode.org/manual/Column-attributes.html#Column-attributes
+(setq org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM_T(Clock)")
+(setq org-agenda-columns-add-appointments-to-effort-sum t)
+(setq org-agenda-custom-commands
+      '(
+       ("n" "Next Action List"
+        tags-todo "next"
+        ((org-agenda-prefix-format " %6e ")))))
+(setq org-agenda-custom-commands
+      '(
+       ("c" ""
+        tags-todo "SCHEDULED=\"<+0d>\""
+        ((org-agenda-overriding-header "TaskChute TODO")
+         (org-agenda-overriding-columns-format "%50ITEM(Task) %10Effort(Effort){:}")
+         (org-agenda-view-columns-initially t)))))
+
+
+;; projectile
+(require 'projectile)
+
+;; SQL Mode
+(require 'sql)
+(setq sql-connection-alist
+      '((server1 (sql-product 'mysql)
+                  (sql-port 3306)
+                  (sql-server "localhost")
+                  (sql-user "root")
+                  (sql-password "root")
+                  (sql-database "test_prod_frekul"))
+		(server (sql-product 'mysql)
+                  (sql-port 3306)
+                  (sql-server "localhost")
+                  (sql-user "root")
+                  (sql-password "root")
+                  (sql-database "tadaoto"))))
+
+(defun my-sql-server1 ()
+  (interactive)
+  (my-sql-connect 'mysql'server1))
+
+(defun my-sql-server2 ()
+  (interactive)
+  (my-sql-connect 'mysql 'server2))
+
+(defun my-sql-connect (product connection)
+  ;; remember to set the sql-product, otherwise, it will fail for the first time
+  ;; you call the function
+  (setq sql-product product)
+  (sql-connect connection))
+
+(add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (toggle-truncate-lines t)))
+
+(setq exec-path (cons "/Applications/MAMP/Library/bin/" exec-path))
+
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
-;; スクロール非表示
-(toggle-scroll-bar nil)
+;; スクロールバー非表示
+(set-scroll-bar-mode nil)
+;; 警告音もフラッシュも全て無効(警告音が完全に鳴らなくなるので注意)
+(setq ring-bell-function 'ignore)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
