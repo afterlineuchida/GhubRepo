@@ -57,8 +57,16 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
       '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.1)));; Mac用フォント設定
 
 ;;yalinum
-(global-yalinum-mode t)
-(set-face-background 'yalinum-bar-face "DarkOliveGreen")
+;(global-yalinum-mode t)
+;(set-face-background 'linum-bar-face "DarkOliveGreen")
+
+;; linum
+(global-linum-mode t)
+(custom-set-faces
+ '(linum ((t (:inherit (shadow default) :foreground "LightSkyBlue2")))))
+(setq linum-delay t)
+(defadvice linum-schedule (around my-linum-schedule () activate)
+  (run-with-idle-timer 0.2 nil #'linum-update-current))
 
 ;; 現在のバッファを消す
 (defun my-kill-current-buffer()
@@ -149,7 +157,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (set-background-color "Black")
   (set-foreground-color "White")
   (set-cursor-color "Yellow")
-  (set-frame-parameter nil 'alpha 80);←透過具合
+  (set-frame-parameter nil 'alpha 73);←透過具合
 ))
 
 ;; Ujelly-beans(color-scheme)
@@ -442,6 +450,8 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 (add-to-list 'auto-mode-alist '("\\.ctp$'" . php-mode))
 (setq php-mode-force-pear nil)
 ;(add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
+
+
 (add-hook 'php-mode-hook
           (lambda ()
 			(subword-mode t)
@@ -465,10 +475,13 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;;python-mode
 (add-hook 'python-mode-hook
-    '(lambda ()
-        (setq tab-width 4)
-        (setq indent-tabs-mode t)
-    ))
+		  '(lambda ()
+			 (setq indent-tabs-mode t)
+			 (setq indent-level 4)
+			 (setq python-indent 4)
+			 (setq tab-width 4)))
+
+;(define-key python-mode-map (kbd "C-c C-v") 'revert-buffer-force)
 
 ;; auto-install
 (require 'auto-install)
@@ -581,10 +594,14 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;; wgrep
 (add-hook 'ag-mode-hook '(lambda ()
-                           (require 'wgrep-ag)
-                           (setq wgrep-auto-save-buffer t)  ; 編集完了と同時に保存
-                           (setq wgrep-enable-key "r")      ; "r" キーで編集モードに
-                           (wgrep-ag-setup)))
+						   (require 'wgrep-ag)
+						   (setq wgrep-auto-save-buffer t)  ; 編集完了と同時に保存
+						   (setq wgrep-enable-key "r")      ; "r" キーで編集モードに
+						   (wgrep-ag-setup)))
+
+;; quickrun
+(define-key global-map (kbd "C-c q")  'quickrun)
+
 
 (require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
@@ -592,7 +609,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 ;;flycheck
 (require 'flycheck)
-(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+;(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
 (add-hook 'php-mode-hook 'flycheck-mode)
 (add-hook 'ruby-mode-hook 'flycheck-mode)
 (add-hook 'jsx-mode-hook 'flycheck-mode)
@@ -863,7 +880,7 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   "\C-cG" 'scheme-other-window)
 
 ;; slime
-(setq inferior-lisp-program "/usr/local/bin/clisp")
+(setq inferior-lisp-program "/usr/local/bin/ccl")
 (add-to-list 'load-path "/Applications/slime")
 (require 'slime)
 (slime-setup)
@@ -888,6 +905,17 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   )
 (add-hook 'scss-mode-hook
   '(lambda() (scss-custom)))
+
+;; emmet-mode
+(require 'emmet-mode)
+(add-hook 'web-mode-hook 'emmet-mode)
+(add-hook 'html-mode-hook 'emmet-mode)
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; マークアップ言語全部で使う
+(add-hook 'css-mode-hook  'emmet-mode) ;; CSSにも使う
+(add-hook 'js2-mode-hook  'emmet-mode) ;; jsxにも使う
+(setq emmet-expand-jsx-className? t)
+(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent はスペース2個
+(define-key emmet-mode-keymap (kbd "C-c C-j") 'emmet-expand-line) ;; C-i で展開
 
 ;; key-combo.el
 (require 'key-combo)
@@ -1032,8 +1060,9 @@ to next line."
 ;(define-key evil-emacs-state-map (kbd "C-[") 'evil-normal-state)
 
 ;; for magit
-(eval-after-load 'evil-core
-  '(evil-set-initial-state 'magit-popup-mode 'emacs))
+(require 'evil-magit)
+;(eval-after-load 'evil-core
+;  '(evil-set-initial-state 'magit-popup-mode 'emacs))
 
 ;; evil-surround
 (require 'evil-surround)
@@ -1128,6 +1157,9 @@ to next line."
             (message "This is not directory!")))
     (error (message "%s" (cadr err)))))
 
+(require 'evil-mc)
+(evil-mc-mode 1)
+
 ;; dash-at-point
 ;(global-set-key "\C-cd" 'dash-at-point)
 ;(global-set-key "\C-ce" 'dash-at-point-with-docset)
@@ -1173,8 +1205,9 @@ to next line."
 
 ;; term+ config
 (require 'term+)
+(require 'term+key-intercept)
 (require 'term+mux)
-;(require 'xterm-color)
+(require 'xterm-256color)
 ;; shell の存在を確認
 (defun skt:shell ()
   (or (executable-find "zsh")
@@ -1338,3 +1371,4 @@ to next line."
  '(web-mode-html-attr-value-face ((t (:foreground "#82AE46"))))
  '(web-mode-html-tag-face ((t (:foreground "#E6B422" :weight bold))))
  '(web-mode-server-comment-face ((t (:foreground "#D9333F")))))
+
