@@ -1254,13 +1254,13 @@ to next line."
 		(list "lumit_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit l_release")
 		(list "dlumit_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit dl_release")
 		(list "dlumit_docker_run" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_lumit dl_docker_run")
-		(list "af_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul af_release")
-		(list "f_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul f_release")
+		(list "af_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul2 a release")
+		(list "f_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul2 f release")
 		(list "dvj_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_dvj dvj_release")
 		(list "dtada_rel" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto dev_release")
 		(list "dtada_mi" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_tadaoto multiple_import")
 		(list "cakeshell" "/Applications/MAMP/bin/php/php5.3.29/bin/php /Applications/MAMP/htdocs/frekul.vpn/cake/console/cake.php")
-		(list "rm_cache" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul rm_cache"))
+		(list "rm_cache" "fab -f /Users/akihiro_uchida/MyDocuments/myscript/fabric/fab_frekul2 rm_cache"))
 	   eshell-command-aliases-list))
 
 
@@ -1349,6 +1349,14 @@ to next line."
             (toggle-truncate-lines t)))
 
 (setq exec-path (cons "/Applications/MAMP/Library/bin/" exec-path))
+
+;; (makunbound 'overriding-minor-mode-map)
+(define-minor-mode overriding-minor-mode
+  "強制的にC-,を割り当てる"                ;説明文字列
+  t                                     ;デフォルトで有効にする
+  ""                                    ;モードラインに表示しない
+  `((,(kbd "C-,") . er/expand-region)
+	(,(kbd "C-c C-v") . revert-buffer-force)))
 
 ;; スタートアップ非表示
 (setq inhibit-startup-message t)
